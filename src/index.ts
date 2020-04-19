@@ -30,8 +30,12 @@ const main = async () => {
 
     client.on('ready', async () => {
         console.log(`Logged in as ${client.user.tag}!`)
-        const admin = await client.users.fetch(process.env.ADMIN_ID)
-        await admin.send(`Logged in as ${client.user.tag}!`)
+        const admins = process.env.ADMIN_ID.split(',')
+        for (let adminId of admins) {
+            const admin = await client.users.fetch(adminId)
+            await admin.send(`Logged in as ${client.user.tag}!`)
+        }
+
 
         const userRepository = getRepository(UserEntity)
         const urlRepository = getRepository(MarketUrl)
