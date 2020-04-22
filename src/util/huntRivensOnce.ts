@@ -9,7 +9,7 @@ import {parseUrlQuery} from "./parseUrlQuery";
 export const huntRivensOnce = async (url: string, platinumLimit: number) => {
     console.log(`***Updating Rivens JSON*** | ${new Date()}`)
 
-    const browser = await puppeteer.launch({ timeout: 60 * 1000, args: ['--no-sandbox'] })
+    const browser = await puppeteer.launch({headless: false ,timeout: 60 * 1000, args: ['--no-sandbox'] })
 
     const rivens = await getNewRivens(url, browser)
     let embeds = []

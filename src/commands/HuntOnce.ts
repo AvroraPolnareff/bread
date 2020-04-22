@@ -4,11 +4,19 @@ import {huntRivensOnce} from "../util/huntRivensOnce";
 import {getRepository} from "typeorm";
 import {MarketUrl} from "../db/entity/MarketUrl";
 import {parseUrlQuery} from "../util/parseUrlQuery";
+import PQueue from "p-queue";
 
 
-export const HuntOnce: BaseCommand = {
-    name: "huntonce",
-    aliases: ["test", "t"],
+
+
+export class HuntOnce implements BaseCommand  {
+    public name = "huntonce"
+    public aliases = ["test", "t"]
+    private promiseQueue : PQueue
+
+    constructor(promiseQueue: PQueue) {
+        this.promiseQueue = promiseQueue
+    }
 
     async run(msg: Message, args?: string[]): Promise<void> {
         try {
@@ -16,7 +24,7 @@ export const HuntOnce: BaseCommand = {
             const urlEntities = await repository.find({userId: msg.author.id})
 
             for (let {url, platinumLimit} of urlEntities) {
-                const embeds = await huntRivensOnce(url, platinumLimit)
+                const embeds =  await this.promiseQueue.add(async () => await huntRivensOnce(url, platinumLimit))
                 for (let embed of embeds) {
                     await msg.reply(parseUrlQuery(url), {embed})
                 }

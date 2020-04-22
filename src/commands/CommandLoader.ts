@@ -9,9 +9,11 @@ import {TimerStorage, TimerStorageImpl} from "../storages/TimerStorage";
 import {Stop} from "./Stop";
 import {inject, injectable} from "inversify";
 import {Message} from "discord.js";
-import {User as UserEntity} from "../db/entity/User";
+import {BreadUser as UserEntity} from "../db/entity/BreadUser";
 import {getRepository} from "typeorm";
 import TYPES from "../types/types";
+import {PromiseQueue} from "../promiseQueue/promiseQueue";
+import PQueue from "p-queue";
 
 export interface CommandLoader {
     commands: BaseCommand[]
@@ -22,14 +24,20 @@ export interface CommandLoader {
 export class CommandLoaderImpl implements CommandLoader {
     public commands: BaseCommand[];
 
-    constructor(@inject(TYPES.TimerStorage) timerStorage: TimerStorage) {
+    private promiseQueue : PQueue
+
+    constructor(
+        @inject(TYPES.TimerStorage) timerStorage: TimerStorage,
+        @inject(TYPES.PQueue) promiseQueue: PQueue
+    ) {
+        this.promiseQueue = promiseQueue
         this.commands = [
             Ping,
             Add,
             Show,
             Remove,
-            new Hunt(timerStorage),
-            HuntOnce,
+            new Hunt(timerStorage, this.promiseQueue),
+            new HuntOnce(this.promiseQueue),
             new Stop(timerStorage)
         ]
     }

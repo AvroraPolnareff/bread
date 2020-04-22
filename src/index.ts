@@ -2,8 +2,8 @@ import "reflect-metadata"
 import {LaughingBreadEmoji} from "./LaughingBreadEmoji";
 import {Message, MessageEmbed} from "discord.js"
 import {ConnectionOptions, createConnection, getRepository} from "typeorm";
-import { CommandLoader} from "./commands/commandList";
-import {User as UserEntity} from "./db/entity/User"
+import { CommandLoader} from "./commands/CommandLoader";
+import {BreadUser as UserEntity} from "./db/entity/BreadUser"
 import {TimerStorage} from "./storages/TimerStorage";
 import {MarketUrl} from "./db/entity/MarketUrl";
 import {huntRivensOnce} from "./util/huntRivensOnce";
@@ -11,15 +11,30 @@ import {parseUrlQuery} from "./util/parseUrlQuery";
 import container from "./inversify.config";
 import TYPES from "./types/types";
 import * as path from "path";
+import {config} from 'dotenv'
+import PQueue from "p-queue";
+config()
 
 const configdb :ConnectionOptions = {
     type: "postgres",
-    url: process.env.DATABASE_URL ,
+    url: process.env.DATABASE_URL,
     synchronize: true,
     "entities": [
         path.join(__dirname, "/db/entity/**/*{.ts,.js}")
     ]
 }
+// const configdb :ConnectionOptions = {
+//     type: "postgres",
+//     database: 'bread',
+//     host: 'localhost',
+//     username: 'avrora',
+//     password: '1234',
+//     port: 5432,
+//     synchronize: true,
+//     "entities": [
+//         path.join(__dirname, "/db/entity/**/*{.ts,.js}")
+//     ]
+// }
 
 
 const main = async () => {
@@ -27,6 +42,12 @@ const main = async () => {
     await createConnection(configdb as ConnectionOptions)
     const timerStorage = container.get<TimerStorage>(TYPES.TimerStorage)
     const commandsLoader = container.get<CommandLoader>(TYPES.CommandLoader)
+    const promiseQueue = container.get<PQueue>(TYPES.PQueue)
+
+    promiseQueue.on('active', () => {
+        console.log(`Working on item.  Size: ${promiseQueue.size}  Pending: ${promiseQueue.pending}`);
+    })
+
 
     client.on('ready', async () => {
         console.log(`Logged in as ${client.user.tag}!`)
@@ -48,7 +69,7 @@ const main = async () => {
                 for (let {url, platinumLimit, updateFrequency} of urlEntities) {
                     const timer = setInterval(async () => {
                         try {
-                            const embeds = await huntRivensOnce(url, platinumLimit)
+                            const embeds = await promiseQueue.add(async () => await huntRivensOnce(url, platinumLimit))
                             for (let embed of embeds) {
                                 await user.send(parseUrlQuery(url), {embed})
                             }

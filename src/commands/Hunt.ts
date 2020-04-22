@@ -3,9 +3,11 @@ import {Message, MessageEmbed} from "discord.js";
 import {getRepository} from "typeorm";
 import {TimerStorage} from "../storages/TimerStorage";
 import {MarketUrl} from "../db/entity/MarketUrl";
-import {User} from "../db/entity/User";
+import {BreadUser} from "../db/entity/BreadUser";
 import {huntRivensOnce} from "../util/huntRivensOnce";
 import {parseUrlQuery} from "../util/parseUrlQuery";
+import {PromiseQueue} from "../promiseQueue/promiseQueue";
+import PQueue from "p-queue";
 
 
 export class Hunt implements BaseCommand {
@@ -13,9 +15,11 @@ export class Hunt implements BaseCommand {
     public aliases = ['start', 'watch']
 
     private timerStorage: TimerStorage
+    private promiseQueue: PromiseQueue
 
-    constructor(timerStorage: TimerStorage) {
+    constructor(timerStorage: TimerStorage, promiseQueue: PQueue) {
         this.timerStorage = timerStorage
+        this.promiseQueue = promiseQueue
     }
 
     async run(msg: Message, args?: string[]): Promise<void> {
@@ -26,7 +30,7 @@ export class Hunt implements BaseCommand {
         for (let {url, platinumLimit, updateFrequency} of urlEntities) {
             const timer = setInterval(async () => {
                 try {
-                    const embeds = await huntRivensOnce(url, platinumLimit)
+                    const embeds = await this.promiseQueue.add(async () => await huntRivensOnce(url, platinumLimit))
                     for (let embed of embeds) {
                         await msg.reply(parseUrlQuery(url), {embed})
                     }
@@ -41,7 +45,7 @@ export class Hunt implements BaseCommand {
             this.timerStorage.add(timer, msg.author.id)
         }
 
-        const userRepository = getRepository(User)
+        const userRepository = getRepository(BreadUser)
         const userEntity = await userRepository.findOne({userId: msg.author.id})
         userEntity.isHunting = true
         await userRepository.update(userEntity.id, userEntity)
