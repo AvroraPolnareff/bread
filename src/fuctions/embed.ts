@@ -1,6 +1,6 @@
 import * as _ from "lodash";
-import {RivenWithDetails} from "../models/RivenWithDetails";
-import {Attribute} from "../models/Riven";
+import {RivenWithDetails} from "../structures/RivenWithDetails";
+import {Attribute} from "../structures/Riven";
 
 export const makeEmbed = (riven: RivenWithDetails) => {
     let embed = {

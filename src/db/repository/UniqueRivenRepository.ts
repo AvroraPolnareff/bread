@@ -1,6 +1,6 @@
 import {EntityRepository, Repository} from "typeorm";
 import {UniqueRiven} from "../entity/UniqueRiven";
-import {Riven} from "../../models/Riven";
+import {Riven} from "../../structures/Riven";
 import * as _ from "lodash"
 
 @EntityRepository(UniqueRiven)

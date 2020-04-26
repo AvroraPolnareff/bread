@@ -1,6 +1,6 @@
 import {EntityRepository, Repository} from "typeorm";
 import {RivenList} from "../entity/RivenList";
-import {Riven} from "../../models/Riven";
+import {Riven} from "../../structures/Riven";
 
 @EntityRepository(RivenList)
 export class RivenListRepository extends Repository<RivenList> {

@@ -1,5 +1,5 @@
 import {JSDOM} from 'jsdom'
-import {Riven} from "../models/Riven";
+import {Riven} from "../structures/Riven";
 
 export const parseRivenList = (content) => {
     const dom = new JSDOM(content)

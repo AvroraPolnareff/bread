@@ -28,7 +28,7 @@ export const Add: BaseCommand = {
             await msg.reply("URL has been added.")
 
         } else {
-            await msg.reply('Url was added earlier.')
+            await msg.reply('Error: this URL has already been added.')
         }
     }
 }

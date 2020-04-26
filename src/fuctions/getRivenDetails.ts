@@ -1,5 +1,5 @@
-import {Riven} from "../models/Riven";
-import {RivenWithDetails} from "../models/RivenWithDetails";
+import {Riven} from "../structures/Riven";
+import {RivenWithDetails} from "../structures/RivenWithDetails";
 
 import {parseRivenPage} from "./parseRivenPage";
 
