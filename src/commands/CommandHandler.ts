@@ -47,7 +47,7 @@ export class CommandHandlerImpl implements CommandHandler {
     }
 
     async run(msg: Message) {
-        if (!msg.author.bot) {
+        if (!msg.author.bot && !msg.guild) {
             await this.addNewUser(msg.author)
             this.logger.info(`User ${msg.author.tag} send "${msg.content}".`)
 
