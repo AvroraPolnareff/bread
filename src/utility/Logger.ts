@@ -18,15 +18,17 @@ export class LogglyLogger implements Logger {
                     token: token,
                     json: true,
                     subdomain: logglyDomain,
-                    tags: ["Bread"]
+                    tags: ["Bread"],
+                    bufferOptions: {size: 1, retriesInMilliseconds: 30000}
                 }),
                 new transports.Console()
             ]
         })
     }
 
+
     public debug(message: string): void {
-        this.#logger.debug(message)
+        this.#logger.log('debug', message)
     }
 
     public error(error: Error, message?: string): void {
@@ -34,11 +36,11 @@ export class LogglyLogger implements Logger {
     }
 
     public info(message: string): void {
-        this.#logger.info(message)
+        this.#logger.log('info', message)
     }
 
     public warn(message: string): void {
-        this.#logger.warn(message)
+        this.#logger.log('warn', message)
     }
 
 }
