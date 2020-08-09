@@ -12,12 +12,9 @@ import {Logger} from "./utility/Logger";
 export const app = async (logger: Logger, promiseQueue, commandsLoader, timerStorage) => {
     const client = new LaughingBreadEmoji({})
 
-
-
     promiseQueue.on('active', () => {
         logger.debug(`Working on item.  Size: ${promiseQueue.size}  Pending: ${promiseQueue.pending}`);
     })
-
 
     client.on('ready', async () => {
         logger.info(`Logged in as ${client.user.tag}!`)
@@ -27,10 +24,10 @@ export const app = async (logger: Logger, promiseQueue, commandsLoader, timerSto
             await admin.send(`Logged in as ${client.user.tag}!`)
         }
 
-
         const userRepository = getRepository(UserEntity)
         const urlRepository = getRepository(MarketUrl)
         const userEntities = await userRepository.find()
+
         for (let {isHunting, userId} of userEntities) {
             if (isHunting) {
                 const user = await client.users.fetch(userId)
