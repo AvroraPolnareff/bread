@@ -11,7 +11,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "@types/jsdom": "^16.2.3",
     "@types/node": "^14.0.27",
@@ -30,9 +29,7 @@
     "sqlite3": "^5.0.0",
     "string-hash": "^1.1.3",
     "ts-md5": "^1.2.7",
-    "ts-node": "^8.10.2",
     "typeorm": "^0.2.25",
-    "typescript": "^3.9.7",
     "winston-loggly-bulk": "^3.1.0"
   },
   "devDependencies": {
@@ -41,7 +38,9 @@
     "@types/puppeteer": "^3.0.1",
     "jest": "^26.2.2",
     "nodemon": "^2.0.4",
-    "ts-jest": "^26.1.4"
+    "ts-jest": "^26.1.4",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   },
   "jest": {
     "preset": "ts-jest",
