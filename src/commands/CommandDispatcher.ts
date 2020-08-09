@@ -1,29 +1,28 @@
-import {BaseCommand} from "../BaseCommand";
+import {Command} from "./Command";
 import {Ping} from "./Ping";
 import {Show} from "./Show";
 import {Add} from "./Add";
 import {Remove} from "./Remove";
 import {Hunt} from "./Hunt";
 import {HuntOnce} from "./HuntOnce";
-import {TimerStorage, TimerStorageImpl} from "../storages/TimerStorage";
+import {TimerStorage} from "../storages/TimerStorage";
 import {Stop} from "./Stop";
 import {inject, injectable} from "inversify";
 import {Message, User} from "discord.js";
 import {BreadUser as UserEntity} from "../db/entity/BreadUser";
 import {getRepository} from "typeorm";
 import TYPES from "../types/types";
-import {PromiseQueue} from "../utility/promiseQueue";
 import PQueue from "p-queue";
 import {Logger} from "../utility/Logger";
 
-export interface CommandHandler {
-    commands: BaseCommand[]
+export interface CommandDispatcher {
+    commands: Command[]
     run(msg: Message) : Promise<void>
 }
 
 @injectable()
-export class CommandHandlerImpl implements CommandHandler {
-    public commands: BaseCommand[];
+export class CommandDispatcherImpl implements CommandDispatcher {
+    public commands: Command[];
 
     private promiseQueue : PQueue
     private logger: Logger

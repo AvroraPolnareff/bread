@@ -1,10 +1,10 @@
-import {BaseCommand} from "../BaseCommand";
+import {Command} from "./Command";
 import {Message} from "discord.js";
 import {getRepository} from "typeorm";
 import {MarketUrl} from "../db/entity/MarketUrl";
 
 
-export const Remove : BaseCommand = {
+export const Remove : Command = {
     name: 'remove',
     aliases: ['delete', 'del', "d"],
 

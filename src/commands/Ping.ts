@@ -1,8 +1,8 @@
 import {MessageEmbed} from "discord.js";
-import {BaseCommand} from "../BaseCommand";
+import {Command} from "./Command";
 
 
-export const Ping: BaseCommand = {
+export const Ping: Command = {
     name: 'ping',
     aliases: ['ping!'],
     run: async (msg, args) => {

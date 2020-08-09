@@ -1,4 +1,4 @@
-import {BaseCommand} from "../BaseCommand";
+import {Command} from "./Command";
 import {Message, MessageEmbed} from "discord.js";
 import {getRepository} from "typeorm";
 import {TimerStorage} from "../storages/TimerStorage";
@@ -11,7 +11,7 @@ import PQueue from "p-queue";
 import {Logger} from "../utility/Logger";
 
 
-export class Hunt implements BaseCommand {
+export class Hunt implements Command {
     public name = 'hunt'
     public aliases = ['start', 'watch']
 

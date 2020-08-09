@@ -1,10 +1,10 @@
-import {BaseCommand} from "../BaseCommand";
+import {Command} from "./Command";
 import {Message} from "discord.js";
 import {TimerStorage} from "../storages/TimerStorage";
 import {getRepository} from "typeorm";
 import {BreadUser} from "../db/entity/BreadUser";
 
-export class Stop implements BaseCommand {
+export class Stop implements Command {
     public aliases: string[]
     public name: string = 'stop'
 

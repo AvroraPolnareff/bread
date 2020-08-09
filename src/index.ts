@@ -3,7 +3,7 @@ import {Logger} from "./utility/Logger";
 import container from "./inversify.config";
 import {TimerStorage} from "./storages/TimerStorage";
 import TYPES from "./types/types";
-import {CommandHandler} from "./commands/CommandHandler";
+import {CommandDispatcher} from "./commands/CommandDispatcher";
 import PQueue from "p-queue";
 import {ConnectionOptions, createConnection} from "typeorm";
 import * as path from "path";
@@ -12,7 +12,7 @@ config()
 
 
 const timerStorage = container.get<TimerStorage>(TYPES.TimerStorage)
-const commandsLoader = container.get<CommandHandler>(TYPES.CommandHandler)
+const commandsLoader = container.get<CommandDispatcher>(TYPES.CommandHandler)
 const promiseQueue = container.get<PQueue>(TYPES.PQueue)
 const logger = container.get<Logger>(TYPES.Logger)
 const configdb :ConnectionOptions = {

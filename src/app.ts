@@ -9,7 +9,7 @@ import {parseUrlQuery} from "./fuctions/parseUrlQuery";
 import {Logger} from "./utility/Logger";
 
 
-export const app = async (logger: Logger, promiseQueue, commandsLoader, timerStorage) => {
+export const app = async (logger: Logger, promiseQueue, commandDispatcher, timerStorage) => {
     const client = new LaughingBreadEmoji({})
 
     promiseQueue.on('active', () => {
@@ -55,7 +55,7 @@ export const app = async (logger: Logger, promiseQueue, commandsLoader, timerSto
     })
 
     client.on('message', async (msg: Message) => {
-        await commandsLoader.run(msg)
+        await commandDispatcher.run(msg)
     })
 
     await client.login(process.env.DISCORD_TOKEN)

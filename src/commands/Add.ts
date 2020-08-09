@@ -1,9 +1,9 @@
-import {BaseCommand} from "../BaseCommand";
+import {Command} from "./Command";
 import {getRepository} from "typeorm";
 import {MarketUrl} from "../db/entity/MarketUrl";
 
 
-export const Add: BaseCommand = {
+export const Add: Command = {
     name: 'add',
     aliases: [],
     async run(msg, args): Promise<void> {

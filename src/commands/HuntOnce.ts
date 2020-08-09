@@ -1,4 +1,4 @@
-import {BaseCommand} from "../BaseCommand";
+import {Command} from "./Command";
 import {Message, MessageEmbed} from "discord.js";
 import {huntRivensOnce} from "../fuctions/huntRivensOnce";
 import {getRepository} from "typeorm";
@@ -10,7 +10,7 @@ import {Logger} from "../utility/Logger";
 
 
 
-export class HuntOnce implements BaseCommand  {
+export class HuntOnce implements Command  {
     public name = "huntonce"
     public aliases = ["test", "t"]
 

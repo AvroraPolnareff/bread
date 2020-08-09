@@ -1,10 +1,10 @@
-import {BaseCommand} from "../BaseCommand";
+import {Command} from "./Command";
 import {Message, MessageEmbed} from "discord.js";
 import {getRepository} from "typeorm";
 import {MarketUrl} from "../db/entity/MarketUrl";
 
 
-export const Show : BaseCommand = {
+export const Show : Command = {
     name: 'show',
     aliases: ['urls'],
 

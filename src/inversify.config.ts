@@ -1,7 +1,7 @@
 import {Container} from "inversify";
 import TYPES from "./types/types";
 import {TimerStorage, TimerStorageImpl} from "./storages/TimerStorage";
-import {CommandHandler, CommandHandlerImpl} from "./commands/CommandHandler";
+import {CommandDispatcher, CommandDispatcherImpl} from "./commands/CommandDispatcher";
 import PQueue from "p-queue";
 import {Logger} from "./utility/Logger";
 import {config} from 'dotenv'
@@ -12,7 +12,7 @@ config()
 const container = new Container()
 
 container.bind<TimerStorage>(TYPES.TimerStorage).to(TimerStorageImpl).inSingletonScope()
-container.bind<CommandHandler>(TYPES.CommandHandler).to(CommandHandlerImpl).inSingletonScope()
+container.bind<CommandDispatcher>(TYPES.CommandHandler).to(CommandDispatcherImpl).inSingletonScope()
 container.bind<PQueue>(TYPES.PQueue).toConstantValue(new PQueue({concurrency: 1}))
 if (process.env.LOGGLY_TOKEN && process.env.LOGGLY_DOMAIN) {
     container.bind(TYPES.logglyToken).toConstantValue(process.env.LOGGLY_TOKEN)
