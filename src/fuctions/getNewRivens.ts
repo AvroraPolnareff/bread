@@ -35,8 +35,7 @@ const getRivenList = async (url: string, browser: Browser) => {
 
     const page = await browser.newPage()
     await page.goto(url)
-    await page.click('.filter__buttons--horizontal > .btn')
-
+    await page.click("div[class^='filter__buttons-horizontal'] > .btn")
     const content = await page.content()
     const height = getPageHeight(content) + 3000
     await page.setViewport({width: 600, height})
