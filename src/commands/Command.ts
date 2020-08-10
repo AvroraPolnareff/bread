@@ -1,6 +1,6 @@
 import {Message} from "discord.js";
 
-export interface BaseCommand {
+export interface Command {
 
     name: string,
     aliases?: string[]

@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import {Container} from "inversify";
 import TYPES from "./types/types";
 import {TimerStorage, TimerStorageImpl} from "./storages/TimerStorage";
@@ -7,20 +8,26 @@ import {Logger} from "./utility/Logger";
 import {config} from 'dotenv'
 import {LogglyLogger} from "./utility/LogglyLogger";
 import {ConsoleLogger} from "./utility/ConsoleLogger";
+import {LaughingBreadEmoji} from "./LaughingBreadEmoji";
 config()
 
 const container = new Container()
 
-container.bind<TimerStorage>(TYPES.TimerStorage).to(TimerStorageImpl).inSingletonScope()
-container.bind<CommandDispatcher>(TYPES.CommandHandler).to(CommandDispatcherImpl).inSingletonScope()
-container.bind<PQueue>(TYPES.PQueue).toConstantValue(new PQueue({concurrency: 1}))
+container.bind(TYPES.clientConfig).toConstantValue({})
 if (process.env.LOGGLY_TOKEN && process.env.LOGGLY_DOMAIN) {
     container.bind(TYPES.logglyToken).toConstantValue(process.env.LOGGLY_TOKEN)
     container.bind(TYPES.logglyDomain).toConstantValue(process.env.LOGGLY_DOMAIN)
-    container.bind<Logger>(TYPES.Logger).to(LogglyLogger).inSingletonScope()
+    container.bind<Logger>(TYPES.Logger).to(LogglyLogger)
 } else {
-    container.bind<Logger>(TYPES.Logger).to(ConsoleLogger).inSingletonScope()
+    container.bind<Logger>(TYPES.Logger).to(ConsoleLogger)
 }
+
+container.bind<CommandDispatcher>(TYPES.CommandDispatcher).to(CommandDispatcherImpl)
+container.bind<TimerStorage>(TYPES.TimerStorage).to(TimerStorageImpl)
+container.bind<PQueue>(TYPES.PQueue).toConstantValue(new PQueue({concurrency: 1}))
+
+container.bind<LaughingBreadEmoji>(TYPES.LaughingBreadEmoji).to(LaughingBreadEmoji)
+
 
 
 

@@ -3,11 +3,8 @@ import Timeout = NodeJS.Timeout;
 
 @injectable()
 export class TimerStorageImpl implements TimerStorage {
-    constructor() {
-        this.timers = []
-    }
 
-    timers: Timer[]
+    timers: Timer[] = []
 
     add (timer: Timeout, userId: string) {
         this.timers.push({timer, userId})

@@ -1,11 +1,15 @@
+import {LaughingBreadEmoji} from "../LaughingBreadEmoji";
+
 let TYPES = {
     TimerStorage: Symbol.for('TimerStorage'),
     BaseCommand: Symbol.for("BaseCommand"),
-    CommandHandler: Symbol.for('CommandHandler'),
+    CommandDispatcher: Symbol.for('CommandHandler'),
     PQueue: Symbol.for('PQueue'),
     Logger: Symbol.for('Logger'),
     logglyToken: Symbol.for('logglyToken'),
-    logglyDomain: Symbol.for('logglyDomain')
+    logglyDomain: Symbol.for('logglyDomain'),
+    LaughingBreadEmoji: Symbol.for('LaughingBreadEmoji'),
+    clientConfig: Symbol.for('clientConfig')
 }
 
 export default TYPES
