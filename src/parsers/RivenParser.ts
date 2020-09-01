@@ -7,7 +7,7 @@ export interface Parser<T> {
     parse(): T
 }
 
-export class RivenPageParser implements Parser<RivenDetails> {
+export class RivenDetailsParser implements Parser<RivenDetails> {
 
     private dom: Dom
 
@@ -29,7 +29,7 @@ export class RivenPageParser implements Parser<RivenDetails> {
     private getBids = () : Bid[] => {
         if (this.dom.getElementsByClassName("non-auction")[0]) return []
         const bidsList = this.dom.getElementsByClassName("infinite-translate")[0]
-        if (bidsList) {
+        if (bidsList.childNodes) {
             let bids = []
             bidsList.childNodes.forEach((node) => {
                 const bid = this.parseBid(node)
@@ -43,20 +43,15 @@ export class RivenPageParser implements Parser<RivenDetails> {
     }
 
     private parseBid(bidNode: DomParser.Node) : Bid {
-        const userNode = bidNode.childNodes[0].childNodes[0].childNodes[0];
+        const userNode = bidNode.getElementsByClassName("user__name--_iAVt")[0]
         if (!userNode) {
             return null
         }
-        const nickname = userNode.childNodes[1].innerHTML
+        const nickname = userNode.innerHTML
         const profileLink = userNode["href"]
-        const bid = bidNode
-            .childNodes[1].childNodes[0]
-            .childNodes[1].childNodes[0]
-            .childNodes[0].innerHTML
-        const updatedAt = bidNode
-            .childNodes[1].childNodes[0]
-            .childNodes[2].childNodes[0]
-            .childNodes[0].innerHTML
+        const bid = bidNode.getElementsByClassName("price")[0].innerHTML
+        const updatedAt = bidNode.getElementsByClassName("lastUpdate--2FPCx")[0]
+            .childNodes[0].childNodes[0].innerHTML                                                      
 
         return {
             nickname,
