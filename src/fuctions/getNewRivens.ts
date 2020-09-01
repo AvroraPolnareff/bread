@@ -5,6 +5,7 @@ import * as _ from "lodash";
 import {JSDOM} from "jsdom";
 import {parseRivenList} from "./parseRivenList";
 import {UniqueRivenRepository} from "../db/repository/UniqueRivenRepository";
+import {RivenListParser} from "../parsers/RivenListParser";
 
 
 export const getNewRivens = async (marketUrl, browser) => {
@@ -35,14 +36,16 @@ const getRivenList = async (url: string, browser: Browser) => {
 
     const page = await browser.newPage()
     await page.goto(url)
-    await page.click("div[class^='filter__buttons-horizontal'] > .btn")
+    await page.click(".filter__buttons-horizontal--2aCfA > .btn")
     const content = await page.content()
     const height = getPageHeight(content) + 3000
     await page.setViewport({width: 600, height})
     await sleep(3000)
     const allContent = await page.content()
     await page.close()
-    return parseRivenList(allContent)
+
+    const parser = new RivenListParser(allContent)
+    return parser.parse()
 }
 
 const getPageHeight = (page) => {

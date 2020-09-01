@@ -1,7 +1,6 @@
 import {Riven} from "../structures/Riven";
 import {RivenWithDetails} from "../structures/RivenWithDetails";
-
-import {parseRivenPage} from "./parseRivenPage";
+import {RivenDetailsParser} from "../parsers/RivenParser";
 
 
 export const getRivenDetails = async (riven: Riven, browser) => {
@@ -13,8 +12,8 @@ export const getRivenDetails = async (riven: Riven, browser) => {
         const allContent = await page.content()
 
         await page.close()
-
-        return {...riven,...parseRivenPage(allContent)} as RivenWithDetails
+        const parser = new RivenDetailsParser(allContent)
+        return {...riven,...parser.parse()} as RivenWithDetails
     } catch (e) {
         console.log(e)
     }
