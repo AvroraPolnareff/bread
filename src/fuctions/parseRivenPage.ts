@@ -14,7 +14,6 @@ export const parseRivenPage = (content) => {
         parseAuctionNotes(auctionNotesNode)
     }
 
-
     return {...auctionInfo, bids: bidsList, description} as RivenDetails
 }
 
