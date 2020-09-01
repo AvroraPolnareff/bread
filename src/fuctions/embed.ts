@@ -1,6 +1,6 @@
 import * as _ from "lodash";
-import {RivenWithDetails} from "../structures/RivenWithDetails";
-import {Attribute} from "../structures/Riven";
+import {Bid, RivenWithDetails} from "../structures/RivenWithDetails";
+import {Attribute, Riven} from "../structures/Riven";
 
 export const makeEmbed = (riven: RivenWithDetails) => {
     let embed = {
@@ -49,7 +49,7 @@ const getColor = (riven) => {
     return 11305941
 }
 
-const bidsAsField = (bids) => {
+const bidsAsField = (bids : Bid[]) => {
     let bidsField = {
         name: "**• BIDS:**",
         value: "",
@@ -59,14 +59,14 @@ const bidsAsField = (bids) => {
     const bidsSorted = _.sortBy(bids, "bid")
 
     _.forEach(bidsSorted, (bid, key) => {
-        bidsField.value += `${key + 1}. **[${bid.nickname}](<${bid.profileLink}>)**: ${bid.bid} Platinum, ${bid.updatedAt};\n`
+        bidsField.value += `${key + 1}. **[${bid.nickname}](<${bid.profile}>)**: ${bid.price} Platinum, ${bid.updatedAt};\n`
     })
     bidsField.value = bidsField.value.slice(0, bidsField.value.length - 1)
 
     return bidsField
 }
 
-const auctionInfoAsField = (riven) => {
+const auctionInfoAsField = (riven: RivenWithDetails) => {
     let auctionInfo = ""
 
     if (riven.hasOwnProperty("startingPrice")) {
