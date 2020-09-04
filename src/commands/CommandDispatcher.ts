@@ -49,6 +49,7 @@ export class CommandDispatcherImpl implements CommandDispatcher {
 
     async run(msg: Message) {
         if (!msg.author.bot) {
+            if (msg.member && msg.member.roles.cache.filter((value) => value.name === "The Bread Operator").size === 0) return
             if (msg.content.startsWith("help")) await msg.reply( this.generateHelp())
             await this.addNewUser(msg.author)
             this.logger.info(`User ${msg.author.tag} send "${msg.content}".`)

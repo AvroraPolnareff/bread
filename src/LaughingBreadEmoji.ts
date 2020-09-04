@@ -1,4 +1,4 @@
-import {BaseClient, Client, ClientOptions, Message, MessageEmbed} from "discord.js";
+import {BaseClient, Client, ClientOptions, Message, MessageEmbed, TextChannel} from "discord.js";
 import {Logger} from "./utility/Logger";
 import {CommandDispatcher} from "./commands/CommandDispatcher";
 import {TimerCategory, TimerStorage} from "./storages/TimerStorage";
@@ -11,6 +11,8 @@ import {getRepository} from "typeorm/index";
 import {decorate, inject, injectable} from "inversify";
 import TYPES from "./types/types";
 import {EventEmitter} from "events";
+import {Prey} from "./db/entity/Prey";
+import {stalkPrey} from "./fuctions/stalkPrey";
 
 decorate(injectable(), Client)
 decorate(injectable(), BaseClient)
@@ -45,11 +47,37 @@ export class LaughingBreadEmoji extends Client {
 
             const userRepository = getRepository(UserEntity)
             const urlRepository = getRepository(MarketUrl)
+            const preyRepository = getRepository(Prey)
             const userEntities = await userRepository.find()
 
-            for (let {isHunting, userId} of userEntities) {
+
+            for (let {isHunting, userId, updateFrequency} of userEntities) {
+                const user = await this.users.fetch(userId)
+                let preys = await preyRepository.find({userId: userId})
+                for (const prey of preys) {
+                    const timer = setInterval(async () => {
+                        const channelId = prey.channelId
+                        const guild = prey.guildId
+
+                        const userInfo = await this.promiseQueue.add(async () => {
+                            return await stalkPrey(prey.url)
+                        })
+
+                        if (userInfo.status !== prey.status) {
+                            const channel = this.guilds.resolve(prey.guildId).channels.resolve(prey.channelId) as TextChannel
+                            await channel
+                                .send(`**${userInfo.nickname}** is now ${userInfo.status} on Warframe Market! <@${prey.userId}>`)
+                            await preyRepository.update({id: prey.id}, {
+                                status: userInfo.status,
+                                lastLogin: Date.toString()
+                            })
+                        }
+                    }, updateFrequency)
+                    this.timerStorage.add(timer, userId, TimerCategory.user, prey.url)
+                }
+
                 if (isHunting) {
-                    const user = await this.users.fetch(userId)
+
                     const urlEntities = await urlRepository.find({userId})
 
                     for (let {url, platinumLimit, updateFrequency} of urlEntities) {

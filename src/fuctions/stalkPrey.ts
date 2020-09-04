@@ -8,6 +8,8 @@ export const stalkPrey = async (userUrl: string) => {
     const page = await browser.newPage()
     await page.goto(userUrl)
     const content = await page.content()
+    await browser.close()
+
     const domParser = new DomParser()
     const dom = domParser.parseFromString(content)
 
@@ -21,5 +23,6 @@ export const stalkPrey = async (userUrl: string) => {
     } else {
         return {nickname, status: Status.Offline}
     }
+
 }
 
