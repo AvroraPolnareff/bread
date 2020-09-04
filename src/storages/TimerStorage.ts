@@ -15,12 +15,13 @@ export class TimerStorageImpl implements TimerStorage {
     }
 
     stopAllUserTimers(userId: string): void {
-        for (let timer of this.timers) {
+        const timers = this.timers.filter(value => value.userId === userId)
+        for (let timer of timers) {
             if (timer.userId === userId) {
                 clearInterval(timer.timer)
             }
         }
-        this.timers = this.timers.filter(value => value.userId !== userId)
+
 
     }
 }
@@ -29,7 +30,7 @@ export class TimerStorageImpl implements TimerStorage {
 export interface TimerStorage {
     timers: Timer[]
 
-    add (timer: Timeout, userId: string) : void
+    add (timer: Timeout, userId: string, category: TimerCategory, snowflake?: string) : void
 
     getAll() : Timer[]
 
