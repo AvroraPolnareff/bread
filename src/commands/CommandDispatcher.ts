@@ -14,6 +14,7 @@ import {getRepository} from "typeorm";
 import TYPES from "../types/types";
 import PQueue from "p-queue";
 import {Logger} from "../utility/Logger";
+import {TrackUser} from "./TrackUser";
 
 export interface CommandDispatcher {
     commands: Command[]
@@ -41,12 +42,13 @@ export class CommandDispatcherImpl implements CommandDispatcher {
             Remove,
             new Hunt(timerStorage, this.promiseQueue, logger),
             new HuntOnce(this.promiseQueue, logger),
-            new Stop(timerStorage)
+            new Stop(timerStorage),
+            new TrackUser(timerStorage, this.promiseQueue, logger)
         ]
     }
 
     async run(msg: Message) {
-        if (!msg.author.bot && !msg.guild) {
+        if (!msg.author.bot) {
             await this.addNewUser(msg.author)
             this.logger.info(`User ${msg.author.tag} send "${msg.content}".`)
 

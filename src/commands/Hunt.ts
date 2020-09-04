@@ -1,7 +1,7 @@
 import {Command} from "./Command";
 import {Message, MessageEmbed} from "discord.js";
 import {getRepository} from "typeorm";
-import {TimerStorage} from "../storages/TimerStorage";
+import {TimerCategory, TimerStorage} from "../storages/TimerStorage";
 import {MarketUrl} from "../db/entity/MarketUrl";
 import {BreadUser} from "../db/entity/BreadUser";
 import {huntRivensOnce} from "../fuctions/huntRivensOnce";
@@ -51,7 +51,7 @@ export class Hunt implements Command {
                 }
             }, updateFrequency)
 
-            this.timerStorage.add(timer, msg.author.id)
+            this.timerStorage.add(timer, msg.author.id, TimerCategory.riven)
         }
 
         const userRepository = getRepository(BreadUser)

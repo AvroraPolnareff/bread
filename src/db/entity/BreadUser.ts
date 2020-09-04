@@ -13,4 +13,6 @@ export class BreadUser {
     @Column()
     isHunting: boolean
 
+    @Column()
+    updateFrequency: number
 }

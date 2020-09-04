@@ -1,7 +1,7 @@
 import {BaseClient, Client, ClientOptions, Message, MessageEmbed} from "discord.js";
 import {Logger} from "./utility/Logger";
 import {CommandDispatcher} from "./commands/CommandDispatcher";
-import {TimerStorage} from "./storages/TimerStorage";
+import {TimerCategory, TimerStorage} from "./storages/TimerStorage";
 import {BreadUser as UserEntity} from "./db/entity/BreadUser";
 import {MarketUrl} from "./db/entity/MarketUrl";
 import {huntRivensOnce} from "./fuctions/huntRivensOnce";
@@ -67,7 +67,7 @@ export class LaughingBreadEmoji extends Client {
                             }
                         }, updateFrequency)
 
-                        this.timerStorage.add(timer, userId)
+                        this.timerStorage.add(timer, userId, TimerCategory.riven)
                     }
                 }
             }

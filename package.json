@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc",
-    "runbuild": "tsc && node build/index.js"
+    "runbuild": "tsc && node build/index.js",
+    "watch": "ts-node-dev src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -42,9 +43,8 @@
     "@types/lodash": "^4.14.159",
     "@types/puppeteer": "^3.0.1",
     "jest": "^26.2.2",
-
-    "ts-jest": "^26.3.0"
-
+    "ts-jest": "^26.3.0",
+    "ts-node-dev": "^1.0.0-pre.62"
   },
   "jest": {
     "preset": "ts-jest",

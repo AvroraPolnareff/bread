@@ -5,7 +5,7 @@ import {MarketUrl} from "../db/entity/MarketUrl";
 
 
 export const Show : Command = {
-    name: 'show',
+    name: 'list',
     aliases: ['urls'],
 
     async run(msg: Message, args?: string[]): Promise<void> {
