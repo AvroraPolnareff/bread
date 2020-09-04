@@ -8,7 +8,7 @@ import {HuntOnce} from "./HuntOnce";
 import {TimerStorage} from "../storages/TimerStorage";
 import {Stop} from "./Stop";
 import {inject, injectable} from "inversify";
-import {Message, User} from "discord.js";
+import {Message, MessageEmbed, User} from "discord.js";
 import {BreadUser as UserEntity} from "../db/entity/BreadUser";
 import {getRepository} from "typeorm";
 import TYPES from "../types/types";
@@ -49,6 +49,7 @@ export class CommandDispatcherImpl implements CommandDispatcher {
 
     async run(msg: Message) {
         if (!msg.author.bot) {
+            if (msg.content.startsWith("help")) await msg.reply( this.generateHelp())
             await this.addNewUser(msg.author)
             this.logger.info(`User ${msg.author.tag} send "${msg.content}".`)
 
@@ -62,6 +63,16 @@ export class CommandDispatcherImpl implements CommandDispatcher {
 
             if (command) await command.run(msg, args)
         }
+    }
+
+    generateHelp () {
+        const embed = new MessageEmbed()
+        embed.title = "All Commands"
+        for (const command of this.commands) {
+            embed.addField(command.name + " [" + command.aliases?.toString() + "]", command.description)
+        }
+        console.log(embed)
+        return embed
     }
 
     async addNewUser (user: User): Promise<UserEntity>  {

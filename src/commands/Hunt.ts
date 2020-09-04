@@ -14,6 +14,7 @@ import {Logger} from "../utility/Logger";
 export class Hunt implements Command {
     public name = 'hunt'
     public aliases = ['start', 'watch']
+    public description = "Searches new riven mods for given list."
 
     private timerStorage: TimerStorage
     private promiseQueue: PromiseQueue

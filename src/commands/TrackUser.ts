@@ -7,10 +7,12 @@ import {Prey} from "../db/entity/Prey";
 import {stalkPrey} from "../fuctions/stalkPrey";
 import PQueue from "p-queue";
 import {Logger} from "../utility/Logger";
+import {MarketUrl} from "../db/entity/MarketUrl";
 
 export class TrackUser implements Command {
     public aliases: string[]
     public name: string = 'trackuser'
+    public description = "Commands for user tracking: add, remove, list."
 
 
     public constructor(
@@ -26,8 +28,18 @@ export class TrackUser implements Command {
         const userEntity = await userRepository.findOne({userId: msg.author.id})
         let preys = await preyRepository.find({userId: msg.author.id})
         if (args[0] === "list") {
-            let embed = new MessageEmbed()
+            const embed = new MessageEmbed()
+            embed.setTitle('User Tracking Profiles')
+            preys.forEach((prey, index) => {
+                embed.addField(`**${index + 1}:**`, `*${prey.url}*`)
+            })
+            await msg.reply(embed)
 
+        } else if (args[0] === "remove") {
+            const preyForDelete = preys[parseInt(args[1]) - 1]
+            this.timerStorage.stopTimers( {snowflake: preyForDelete.url})
+            const deletedPrey = await preyRepository.delete(preyForDelete)
+            await msg.reply("Url " + preyForDelete.url + " has been successfully deleted from list!")
         } else if (args[0]) {
             let initPrey
             try {

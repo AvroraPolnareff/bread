@@ -7,6 +7,7 @@ import {MarketUrl} from "../db/entity/MarketUrl";
 export const Show : Command = {
     name: 'list',
     aliases: ['urls'],
+    description: "Shows list of added urls.",
 
     async run(msg: Message, args?: string[]): Promise<void> {
         const repository = getRepository(MarketUrl)

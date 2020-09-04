@@ -7,6 +7,7 @@ import {MarketUrl} from "../db/entity/MarketUrl";
 export const Remove : Command = {
     name: 'remove',
     aliases: ['delete', 'del', "d"],
+    description: "Removes url from list",
 
     async run(msg: Message, args?: string[]): Promise<void> {
         const index = parseInt(args[0]) - 1

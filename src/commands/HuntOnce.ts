@@ -13,6 +13,7 @@ import {Logger} from "../utility/Logger";
 export class HuntOnce implements Command  {
     public name = "huntonce"
     public aliases = ["test", "t"]
+    public description = "Same as hunt, but instantly and once."
 
     private promiseQueue : PQueue
     private logger : Logger

@@ -7,6 +7,7 @@ import {BreadUser} from "../db/entity/BreadUser";
 export class Stop implements Command {
     public aliases: string[]
     public name: string = 'stop'
+    public description = "Stops riven searching."
 
     private timerStorage: TimerStorage
 

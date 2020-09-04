@@ -19,7 +19,7 @@ export class TimerStorageImpl implements TimerStorage {
         return this.timers
     }
 
-    stopTimers(userId?: string, category?: TimerCategory, snowflake?: string) {
+    stopTimers({userId, category, snowflake}) {
         const timers = this.timers.filter(timer => timer.userId === userId || category === timer.category || snowflake === timer.snowflake)
         for (let timer of timers) {
             if (timer.userId === userId) {
@@ -48,11 +48,16 @@ export interface TimerStorage {
 
     getAll() : Timer[]
 
-    stopTimers(userId?: string, category?: TimerCategory, snowflake?: string) : void
+    stopTimers(parameters: TimerParameters) : void
 
     stopAllUserTimers(userId: string): void
 }
 
+export interface TimerParameters {
+    userId?: string,
+    category?: TimerCategory,
+    snowflake?: string
+}
 
 export interface Timer {
     timer: Timeout,
