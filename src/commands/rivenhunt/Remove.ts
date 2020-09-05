@@ -1,13 +1,14 @@
-import {Command} from "./Command";
+import {Command} from "../Command";
 import {Message} from "discord.js";
 import {getRepository} from "typeorm";
-import {MarketUrl} from "../db/entity/MarketUrl";
+import {MarketUrl} from "../../db/entity/MarketUrl";
 
 
 export const Remove : Command = {
     name: 'remove',
     aliases: ['delete', 'del', "d"],
     description: "Removes url from list",
+    prefix: "rivenhunt",
 
     async run(msg: Message, args?: string[]): Promise<void> {
         const index = parseInt(args[0]) - 1

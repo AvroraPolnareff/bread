@@ -1,11 +1,11 @@
-import {Command} from "./Command";
+import {Command} from "../Command";
 import {Message, MessageEmbed} from "discord.js";
-import {huntRivensOnce} from "../fuctions/huntRivensOnce";
+import {huntRivensOnce} from "../../fuctions/huntRivensOnce";
 import {getRepository} from "typeorm";
-import {MarketUrl} from "../db/entity/MarketUrl";
-import {parseUrlQuery} from "../fuctions/parseUrlQuery";
+import {MarketUrl} from "../../db/entity/MarketUrl";
+import {parseUrlQuery} from "../../fuctions/parseUrlQuery";
 import PQueue from "p-queue";
-import {Logger} from "../utility/Logger";
+import {Logger} from "../../utility/Logger";
 
 
 
@@ -14,6 +14,7 @@ export class HuntOnce implements Command  {
     public name = "huntonce"
     public aliases = ["test", "t"]
     public description = "Same as hunt, but instantly and once."
+    public prefix = "rivenhunt"
 
     private promiseQueue : PQueue
     private logger : Logger

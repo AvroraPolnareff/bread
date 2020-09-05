@@ -1,11 +1,12 @@
-import {Command} from "./Command";
+import {Command} from "../Command";
 import {getRepository} from "typeorm";
-import {MarketUrl} from "../db/entity/MarketUrl";
+import {MarketUrl} from "../../db/entity/MarketUrl";
 
 
 export const Add: Command = {
     name: 'add',
     description: "Adds given url to hunting list.",
+    prefix: "rivenhunt",
     async run(msg, args): Promise<void> {
         const newUrl = args[0]
         const repository = getRepository(MarketUrl)

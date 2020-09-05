@@ -1,20 +1,21 @@
-import {Command} from "./Command";
+import {Command} from "../Command";
 import {Message, MessageEmbed} from "discord.js";
 import {getRepository} from "typeorm";
-import {TimerCategory, TimerStorage} from "../storages/TimerStorage";
-import {MarketUrl} from "../db/entity/MarketUrl";
-import {BreadUser} from "../db/entity/BreadUser";
-import {huntRivensOnce} from "../fuctions/huntRivensOnce";
-import {parseUrlQuery} from "../fuctions/parseUrlQuery";
-import {PromiseQueue} from "../utility/promiseQueue";
+import {TimerCategory, TimerStorage} from "../../storages/TimerStorage";
+import {MarketUrl} from "../../db/entity/MarketUrl";
+import {BreadUser} from "../../db/entity/BreadUser";
+import {huntRivensOnce} from "../../fuctions/huntRivensOnce";
+import {parseUrlQuery} from "../../fuctions/parseUrlQuery";
+import {PromiseQueue} from "../../utility/promiseQueue";
 import PQueue from "p-queue";
-import {Logger} from "../utility/Logger";
+import {Logger} from "../../utility/Logger";
 
 
 export class Hunt implements Command {
     public name = 'hunt'
     public aliases = ['start', 'watch']
     public description = "Searches new riven mods for given list."
+    public prefix = "rivenhunt"
 
     private timerStorage: TimerStorage
     private promiseQueue: PromiseQueue

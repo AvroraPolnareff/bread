@@ -1,13 +1,14 @@
-import {Command} from "./Command";
+import {Command} from "../Command";
 import {Message, MessageEmbed} from "discord.js";
 import {getRepository} from "typeorm";
-import {MarketUrl} from "../db/entity/MarketUrl";
+import {MarketUrl} from "../../db/entity/MarketUrl";
 
 
 export const Show : Command = {
     name: 'list',
     aliases: ['urls'],
     description: "Shows list of added urls.",
+    prefix: "rivenhunt",
 
     async run(msg: Message, args?: string[]): Promise<void> {
         const repository = getRepository(MarketUrl)

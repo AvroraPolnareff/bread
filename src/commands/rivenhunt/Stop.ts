@@ -1,13 +1,14 @@
-import {Command} from "./Command";
+import {Command} from "../Command";
 import {Message} from "discord.js";
-import {TimerStorage} from "../storages/TimerStorage";
+import {TimerStorage} from "../../storages/TimerStorage";
 import {getRepository} from "typeorm";
-import {BreadUser} from "../db/entity/BreadUser";
+import {BreadUser} from "../../db/entity/BreadUser";
 
 export class Stop implements Command {
     public aliases: string[]
     public name: string = 'stop'
     public description = "Stops riven searching."
+    public prefix = "rivenhunt"
 
     private timerStorage: TimerStorage
 
