@@ -37,7 +37,7 @@ export class TrackUser implements Command {
 
         } else if (args[0] === "remove") {
             const preyForDelete = preys[parseInt(args[1]) - 1]
-            this.timerStorage.stopTimers( {snowflake: preyForDelete.url})
+            this.timerStorage.stopTimers({snowflake: preyForDelete.url})
             const deletedPrey = await preyRepository.delete(preyForDelete)
             await msg.reply("Url " + preyForDelete.url + " has been successfully deleted from list!")
         } else if (args[0]) {
@@ -55,17 +55,10 @@ export class TrackUser implements Command {
                     guildId: msg.guild.id,
                     userId: msg.author.id
                 })
-                preys.push(await preyRepository.save(preyEntity))
-                await msg.reply(`Start tracking for user ${initPrey.nickname} at ${Date().toString()}`)
-            } catch (e) {
-                this.logger.error(e)
-                let embed = new MessageEmbed()
-                embed.addField("Error...", e.message)
-                await msg.reply(embed)
-            }
+                const savedPrey = await preyRepository.save(preyEntity)
 
-            for (const prey of preys) {
                 const timer = setInterval(async () => {
+                    const prey = await preyRepository.findOne({id: savedPrey.id})
                     const channelId = prey.channelId
                     const guild = prey.guildId
 
@@ -79,14 +72,25 @@ export class TrackUser implements Command {
                             .channels.resolve(channelId) as TextChannel
                         await channel
                             .send(`**${userInfo.nickname}** is now ${userInfo.status} on Warframe Market! <@${prey.userId}>`)
-                        await preyRepository.update({id: prey.id}, {
+                        const updated = await preyRepository.update({id: prey.id}, {
                             status: userInfo.status,
-                            lastLogin: Date.toString()
+                            lastLogin: Date.now().toString()
                         })
+
                     }
                 }, userEntity.updateFrequency)
-                this.timerStorage.add(timer, msg.author.id, TimerCategory.user, prey.url)
+                this.timerStorage.add(timer, msg.author.id, TimerCategory.user, savedPrey.url)
+
+                await msg.reply(`Start tracking for user ${initPrey.nickname} at ${Date.now().toString()}`)
+
+            } catch (e) {
+                this.logger.error(e)
+                let embed = new MessageEmbed()
+                embed.addField("Error...", e.message)
+                await msg.reply(embed)
             }
+
+
 
         }
     }

@@ -54,22 +54,21 @@ export class LaughingBreadEmoji extends Client {
             for (let {isHunting, userId, updateFrequency} of userEntities) {
                 const user = await this.users.fetch(userId)
                 let preys = await preyRepository.find({userId: userId})
+
                 for (const prey of preys) {
                     const timer = setInterval(async () => {
-                        const channelId = prey.channelId
-                        const guild = prey.guildId
-
                         const userInfo = await this.promiseQueue.add(async () => {
                             return await stalkPrey(prey.url)
                         })
-
-                        if (userInfo.status !== prey.status) {
+                        
+                        const newPrey = await preyRepository.findOne({id: prey.id})
+                        if (userInfo.status !== newPrey.status) {
                             const channel = this.guilds.resolve(prey.guildId).channels.resolve(prey.channelId) as TextChannel
                             await channel
                                 .send(`**${userInfo.nickname}** is now ${userInfo.status} on Warframe Market! <@${prey.userId}>`)
                             await preyRepository.update({id: prey.id}, {
                                 status: userInfo.status,
-                                lastLogin: Date.toString()
+                                lastLogin: Date.now().toString()
                             })
                         }
                     }, updateFrequency)
