@@ -6,6 +6,7 @@ export interface Command {
     aliases?: string[]
     description?: string
     prefix?: string
+    args?: string
 
     run (msg : Message, args?: string[]) : Promise<void>
 }

@@ -4,10 +4,10 @@ import {getRepository} from "typeorm";
 import {MarketUrl} from "../../db/entity/MarketUrl";
 
 
-export const Show : Command = {
+export const List : Command = {
     name: 'list',
     aliases: ['urls'],
-    description: "Shows list of added urls.",
+    description: "This command will display the list of active links used by the **Riven Hunter** in the channel it was posted in.",
     prefix: "rivenhunt",
 
     async run(msg: Message, args?: string[]): Promise<void> {

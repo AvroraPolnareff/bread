@@ -5,8 +5,9 @@ import {MarketUrl} from "../../db/entity/MarketUrl";
 
 export const Add: Command = {
     name: 'add',
-    description: "Adds given url to hunting list.",
+    description: "This command will add the given link to the **Riven Hunter** list. Once there is a change, it will post a message containing an update.",
     prefix: "rivenhunt",
+    args: "url",
     async run(msg, args): Promise<void> {
         const newUrl = args[0]
         const repository = getRepository(MarketUrl)

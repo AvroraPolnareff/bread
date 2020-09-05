@@ -10,10 +10,10 @@ import {Logger} from "../../utility/Logger";
 
 
 
-export class HuntOnce implements Command  {
-    public name = "huntonce"
+export class Sample implements Command  {
+    public name = "sample"
     public aliases = ["test", "t"]
-    public description = "Same as hunt, but instantly and once."
+    public description = "This command will run a quick single **Riven Hunter** iteration following the list of active links."
     public prefix = "rivenhunt"
 
     private promiseQueue : PQueue

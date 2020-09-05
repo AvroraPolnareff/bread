@@ -7,7 +7,7 @@ import {BreadUser} from "../../db/entity/BreadUser";
 export class Stop implements Command {
     public aliases: string[]
     public name: string = 'stop'
-    public description = "Stops riven searching."
+    public description = "This command will stop the **Riven Hunter** in the channel it was posted in."
     public prefix = "rivenhunt"
 
     private timerStorage: TimerStorage

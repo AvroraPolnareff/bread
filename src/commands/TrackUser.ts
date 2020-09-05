@@ -7,7 +7,6 @@ import {Prey} from "../db/entity/Prey";
 import {stalkPrey} from "../fuctions/stalkPrey";
 import PQueue from "p-queue";
 import {Logger} from "../utility/Logger";
-import {MarketUrl} from "../db/entity/MarketUrl";
 
 export class TrackUser implements Command {
     public aliases: string[]

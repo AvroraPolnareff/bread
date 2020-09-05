@@ -5,7 +5,7 @@ import {Command} from "./Command";
 export const Ping: Command = {
     name: 'ping',
     aliases: ['ping!'],
-    description: "Checks is bot can send messages",
+    description: "This command will let you know if the bot is listening to this channel.",
     run: async (msg, args) => {
         const embed = new MessageEmbed()
         embed.addField("HAHA", "PONG!!!")

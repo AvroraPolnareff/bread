@@ -1,10 +1,10 @@
 import {Command} from "./Command";
 import {Ping} from "./Ping";
-import {Show} from "./rivenhunt/Show";
+import {List} from "./rivenhunt/List";
 import {Add} from "./rivenhunt/Add";
 import {Remove} from "./rivenhunt/Remove";
-import {Hunt} from "./rivenhunt/Hunt";
-import {HuntOnce} from "./rivenhunt/HuntOnce";
+import {Start} from "./rivenhunt/Start";
+import {Sample} from "./rivenhunt/Sample";
 import {TimerStorage} from "../storages/TimerStorage";
 import {Stop} from "./rivenhunt/Stop";
 import {inject, injectable} from "inversify";
@@ -39,10 +39,10 @@ export class CommandDispatcherImpl implements CommandDispatcher {
         this.commands = [
             Ping,
             Add,
-            Show,
+            List,
             Remove,
-            new Hunt(timerStorage, this.promiseQueue, logger),
-            new HuntOnce(this.promiseQueue, logger),
+            new Start(timerStorage, this.promiseQueue, logger),
+            new Sample(this.promiseQueue, logger),
             new Stop(timerStorage),
             new TrackUser(timerStorage, this.promiseQueue, logger)
         ]
@@ -87,9 +87,11 @@ export class CommandDispatcherImpl implements CommandDispatcher {
         const embed = new MessageEmbed()
         embed.title = "All Commands"
         for (const command of this.commands) {
-            embed.addField(command.name + " [" + command.aliases?.toString() + "]", command.description)
+            const name = `${command.prefix ?? ""} ${command.name}`
+            const aliases = command.aliases ? `\n Aliases: ${command.aliases.reduce((prev, curr) => prev + ", " + curr)}.` : ""
+            const args = command.args ? ` [${command.args}]` : ""
+            embed.addField(name + args , command.description + aliases)
         }
-        console.log(embed)
         return embed
     }
 

@@ -11,10 +11,10 @@ import PQueue from "p-queue";
 import {Logger} from "../../utility/Logger";
 
 
-export class Hunt implements Command {
-    public name = 'hunt'
-    public aliases = ['start', 'watch']
-    public description = "Searches new riven mods for given list."
+export class Start implements Command {
+    public name = 'start'
+    public aliases = ['hunt', 'watch']
+    public description = "This command will start the **Riven Hunter** in the channel it was posted in."
     public prefix = "rivenhunt"
 
     private timerStorage: TimerStorage

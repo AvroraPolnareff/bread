@@ -7,8 +7,9 @@ import {MarketUrl} from "../../db/entity/MarketUrl";
 export const Remove : Command = {
     name: 'remove',
     aliases: ['delete', 'del', "d"],
-    description: "Removes url from list",
+    description: "This command will remove the chosen link from the **Riven Hunter** list assigned to this channel.",
     prefix: "rivenhunt",
+    args: "index",
 
     async run(msg: Message, args?: string[]): Promise<void> {
         const index = parseInt(args[0]) - 1
