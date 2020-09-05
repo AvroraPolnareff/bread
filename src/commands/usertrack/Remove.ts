@@ -18,8 +18,12 @@ export class Remove implements Command {
     async run(msg: Message, args?: string[]): Promise<void> {
         const preyRepository = getRepository(Prey)
         let preys = await preyRepository.find({userId: msg.author.id})
-        const preyForDelete = preys[parseInt(args[1]) - 1]
-        this.timerStorage.stopTimers({snowflake: preyForDelete.url})
+        const preyForDelete = preys[parseInt(args[0]) - 1]
+        this.timerStorage.stopTimers({
+            userId: msg.author.id,
+            snowflake: preyForDelete.channelId + preyForDelete.guildId
+        })
+        await preyRepository.delete(preyForDelete)
         await msg.reply("Url " + preyForDelete.url + " has been successfully deleted from list!")
     }
 

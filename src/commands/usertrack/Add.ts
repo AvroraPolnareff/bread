@@ -63,7 +63,7 @@ export class Add implements Command{
 
                 }
             }, userEntity.updateFrequency)
-            this.timerStorage.add(timer, msg.author.id, TimerCategory.user, savedPrey.url)
+            this.timerStorage.add(timer, msg.author.id, TimerCategory.user, savedPrey.channelId + savedPrey.guildId)
 
             await msg.reply(`Start tracking for user ${initPrey.nickname} at ${Date.now().toString()}`)
 
