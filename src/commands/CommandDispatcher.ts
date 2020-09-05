@@ -14,7 +14,10 @@ import {getRepository} from "typeorm";
 import TYPES from "../types/types";
 import PQueue from "p-queue";
 import {Logger} from "../utility/Logger";
-import {TrackUser} from "./TrackUser";
+import {Add as UserTrackAdd} from "./usertrack/Add"
+import {List as UserTrackList} from "./usertrack/List"
+import {Remove as UserTrackRemove} from "./usertrack/Remove"
+
 
 export interface CommandDispatcher {
     commands: Command[]
@@ -44,7 +47,10 @@ export class CommandDispatcherImpl implements CommandDispatcher {
             new Start(timerStorage, this.promiseQueue, logger),
             new Sample(this.promiseQueue, logger),
             new Stop(timerStorage),
-            new TrackUser(timerStorage, this.promiseQueue, logger)
+            new UserTrackAdd(timerStorage, this.promiseQueue, this.logger),
+            new UserTrackList(),
+            new UserTrackRemove(timerStorage)
+
         ]
     }
 
