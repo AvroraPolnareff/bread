@@ -25,7 +25,7 @@ export class RivenHunter {
         const urlRepository = getRepository(MarketUrl)
         const urls = await urlRepository.find({userId: this.userId})
 
-        if (urls.some(entry => entry.url === url || entry.channelId === channelId || entry.guildId === guildId)) {
+        if (urls.some(entry => entry.url === url && entry.channelId === channelId && entry.guildId === (guildId ?? ''))) {
             throw Error("URL has been added.")
         }
 
