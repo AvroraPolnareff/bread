@@ -4,15 +4,17 @@ import {CommandDispatcher} from "./commands/CommandDispatcher";
 import {TimerCategory, TimerStorage} from "./storages/TimerStorage";
 import {BreadUser as UserEntity} from "./db/entity/BreadUser";
 import {MarketUrl} from "./db/entity/MarketUrl";
-import {huntRivensOnce} from "./fuctions/huntRivensOnce";
+import {huntRivenModsOnce} from "./fuctions/huntRivenModsOnce";
 import {parseUrlQuery} from "./fuctions/parseUrlQuery";
 import PQueue from "p-queue";
 import {getRepository} from "typeorm/index";
 import {decorate, inject, injectable} from "inversify";
 import TYPES from "./types/types";
 import {EventEmitter} from "events";
-import {Prey} from "./db/entity/Prey";
+import {Prey, Status} from "./db/entity/Prey";
 import {stalkPrey} from "./fuctions/stalkPrey";
+import {RivenHunter} from "./features/RivenHunter";
+import {makeEmbed} from "./fuctions/embed";
 
 decorate(injectable(), Client)
 decorate(injectable(), BaseClient)
@@ -23,10 +25,10 @@ export class LaughingBreadEmoji extends Client {
 
     constructor(
         @inject(TYPES.Logger) private logger: Logger,
-        @inject(TYPES.PQueue) private promiseQueue : PQueue,
-        @inject(TYPES.CommandDispatcher) private commandDispatcher : CommandDispatcher,
-        @inject(TYPES.TimerStorage) private timerStorage : TimerStorage,
-        @inject(TYPES.clientConfig) options? : ClientOptions
+        @inject(TYPES.PQueue) private promiseQueue: PQueue,
+        @inject(TYPES.CommandDispatcher) private commandDispatcher: CommandDispatcher,
+        @inject(TYPES.TimerStorage) private timerStorage: TimerStorage,
+        @inject(TYPES.clientConfig) options?: ClientOptions
     ) {
         super(options);
         this.initClient()
@@ -51,7 +53,7 @@ export class LaughingBreadEmoji extends Client {
             const userEntities = await userRepository.find()
 
 
-            for (let {isHunting, userId, updateFrequency} of userEntities) {
+            for (let {userId, userUpdateFrequency} of userEntities) {
                 const user = await this.users.fetch(userId)
                 let preys = await preyRepository.find({userId: userId})
 
@@ -60,42 +62,48 @@ export class LaughingBreadEmoji extends Client {
                         const userInfo = await this.promiseQueue.add(async () => {
                             return await stalkPrey(prey.url)
                         })
-                        
+
                         const newPrey = await preyRepository.findOne({id: prey.id})
                         if (userInfo.status !== newPrey.status) {
-                            const channel = this.guilds.resolve(prey.guildId).channels.resolve(prey.channelId) as TextChannel
-                            await channel
-                                .send(`**${userInfo.nickname}** is now ${userInfo.status} on Warframe Market! <@${prey.userId}>`)
+                            const onlineMessage = `<@${prey.userId}>, ${userInfo.nickname} is currently ${userInfo.status} on Warframe Market!`
+                            const offlineMessage = `<@${prey.userId}>, ${userInfo.nickname} just went offline on Warframe Market.`
+                            const message = prey.status === Status.Offline ? offlineMessage : onlineMessage
+
+                            if (prey.guildId && prey.channelId) {
+                                const channel = this.guilds.resolve(prey.guildId).channels.resolve(prey.channelId) as TextChannel
+                                await channel
+                                    .send(message)
+
+                            } else {
+                                await user.send(message)
+                            }
                             await preyRepository.update({id: prey.id}, {
                                 status: userInfo.status,
                                 lastLogin: Date.now().toString()
                             })
                         }
-                    }, updateFrequency)
+                    }, userUpdateFrequency)
                     this.timerStorage.add(timer, userId, TimerCategory.user, prey.url)
                 }
 
-                if (isHunting) {
 
-                    const urlEntities = await urlRepository.find({userId})
+                const urlEntities = await urlRepository.find({userId})
 
-                    for (let {url, platinumLimit, updateFrequency} of urlEntities) {
-                        const timer = setInterval(async () => {
-                            try {
-                                const embeds = await this.promiseQueue.add(async () => await huntRivensOnce(url, platinumLimit))
-                                for (let embed of embeds) {
-                                    await user.send(parseUrlQuery(url), {embed})
-                                }
-                            } catch (e) {
-                                this.logger.error(e)
-                                let embed = new MessageEmbed()
-                                embed.addField("Error...", e.message)
-                                await user.send(embed)
+                for (let urlEntity of urlEntities) {
+                    const rivenHunter = new RivenHunter(user.id, this.promiseQueue, this.timerStorage)
+                    await rivenHunter.startHunting(urlEntity, async (rivenMods) => {
+                        const embeds = rivenMods.map(mod => makeEmbed(mod))
+                        for (const embed of embeds) {
+                            if (urlEntity.guildId && urlEntity.channelId) {
+                                const channel = this.guilds.resolve(urlEntity.guildId).channels.resolve(urlEntity.channelId) as TextChannel
+                                await channel
+                                    .send(`<@${userId}>`, embed)
+
+                            } else {
+                                await user.send(`<@${userId}>`, embed)
                             }
-                        }, updateFrequency)
-
-                        this.timerStorage.add(timer, userId, TimerCategory.riven)
-                    }
+                        }
+                    })
                 }
             }
         })
@@ -105,3 +113,7 @@ export class LaughingBreadEmoji extends Client {
         })
     }
 }
+
+
+
+

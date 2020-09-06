@@ -10,5 +10,5 @@ module.exports = {
     migrations: [
         path.join(__dirname, "/src/db/migrations/**/*{.ts,.js}")
     ],
-    cli: {migrationsDir: path.join(__dirname, "/db/migrations")}
+    cli: {migrationsDir:  "/src/db/migrations"}
 }

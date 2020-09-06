@@ -3,10 +3,7 @@ import {Ping} from "./Ping";
 import {List} from "./rivenhunt/List";
 import {Add} from "./rivenhunt/Add";
 import {Remove} from "./rivenhunt/Remove";
-import {Start} from "./rivenhunt/Start";
-import {Sample} from "./rivenhunt/Sample";
 import {TimerStorage} from "../storages/TimerStorage";
-import {Stop} from "./rivenhunt/Stop";
 import {inject, injectable} from "inversify";
 import {Message, MessageEmbed, User} from "discord.js";
 import {BreadUser as UserEntity} from "../db/entity/BreadUser";
@@ -41,12 +38,9 @@ export class CommandDispatcherImpl implements CommandDispatcher {
         this.promiseQueue = promiseQueue
         this.commands = [
             Ping,
-            Add,
-            List,
-            Remove,
-            new Start(timerStorage, this.promiseQueue, logger),
-            new Sample(this.promiseQueue, logger),
-            new Stop(timerStorage),
+            new Add(this.promiseQueue, timerStorage),
+            new List(this.promiseQueue, timerStorage),
+            new Remove(this.promiseQueue, timerStorage),
             new UserTrackAdd(timerStorage, this.promiseQueue, this.logger),
             new UserTrackList(),
             new UserTrackRemove(timerStorage)
@@ -66,6 +60,7 @@ export class CommandDispatcherImpl implements CommandDispatcher {
         const messageCommand = messageWords[0]
         const args = messageWords.slice(1)
         const commandsWithPrefixes = this.commands.filter((command) => !!command.prefix)
+        const commandsWithoutPrefixes = this.commands.filter((command) => !command.prefix)
         let prefixes = new Set()
         for (const command of commandsWithPrefixes) {
             prefixes.add(command.prefix)
@@ -80,7 +75,7 @@ export class CommandDispatcherImpl implements CommandDispatcher {
             if (command) await command.run(msg, messageWords.slice(2))
 
         } else {
-            const command = this.commands.find(command => {
+            const command = commandsWithoutPrefixes.find(command => {
                 return command.name === messageCommand || command.aliases?.some(
                     alias => alias === messageCommand)
             })
@@ -109,6 +104,8 @@ export class CommandDispatcherImpl implements CommandDispatcher {
             const newUser = new UserEntity()
             newUser.userId = userId
             newUser.isHunting = false
+            newUser.userUpdateFrequency = 120000
+            newUser.rivenUpdateFrequency = 300000
             this.logger.info(`New User. tag: ${user.tag}, username: ${user.username}, id: ${userId}, avatar: ${user.avatar}`)
             return await repository.save(newUser)
         } else {

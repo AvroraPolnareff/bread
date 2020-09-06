@@ -1,36 +1,45 @@
 import {Command} from "../Command";
-import {getRepository} from "typeorm";
 import {MarketUrl} from "../../db/entity/MarketUrl";
+import {RivenHunter} from "../../features/RivenHunter";
+import PQueue from "p-queue";
+import {TimerStorage} from "../../storages/TimerStorage";
+import { Message } from "discord.js";
+import {makeEmbed} from "../../fuctions/embed";
 
 
-export const Add: Command = {
-    name: 'add',
-    description: "This command will add the given link to the **Riven Hunter** list. Once there is a change, it will post a message containing an update.",
-    prefix: "rivenhunt",
-    args: "url",
-    async run(msg, args): Promise<void> {
+export class Add implements Command {
+
+    constructor(
+        private promiseQueue: PQueue,
+        private timerStorage: TimerStorage
+    ) {}
+
+    public name = 'add'
+    public description = "This command will add the given link to the **Riven Hunter** list. Once there is a change, it will post a message containing an update."
+    public prefix = "rivenhunt"
+    public args = "url"
+
+    async run(msg: Message, args: string[]): Promise<void> {
+        const rivenHunter = new RivenHunter(msg.author.id, this.promiseQueue, this.timerStorage)
         const newUrl = args[0]
-        const repository = getRepository(MarketUrl)
-        const urls = await repository.find({userId: msg.author.id})
-
-        if (!urls.some(entry => entry.url === newUrl)) {
-            const entity = new MarketUrl()
-            entity.userId = msg.author.id
-            entity.url = newUrl
-
-            await msg.reply('Enter interval between updates (minutes)')
-            const updateFrequencyRespond = await msg.channel.awaitMessages(m => !!parseInt(m.content) && parseInt(m.content) > 0, {max: 1})
-            entity.updateFrequency = parseInt(updateFrequencyRespond.first().content) * 1000 * 60
-
-            await msg.reply("Enter platinum limit")
-            const platinumLimitRespond = await msg.channel.awaitMessages(m => !!parseInt(m.content) && parseInt(m.content) > 0, {max: 1})
-            entity.platinumLimit = parseInt(platinumLimitRespond.first().content)
-
-            await repository.save(entity)
-            await msg.reply("URL has been added.")
-
-        } else {
-            await msg.reply('Error: this URL has already been added.')
+        await msg.reply("Enter platinum limit")
+        const platinumLimitRespond = await msg.channel.awaitMessages(m => !!parseInt(m.content) && parseInt(m.content) > 0, {max: 1})
+        const platinumLimit = parseInt(platinumLimitRespond.first().content)
+        let urlEntity : MarketUrl
+        if (msg.guild) {
+            urlEntity = await rivenHunter.add(newUrl, platinumLimit, msg.channel.id, msg.guild.id)
+        }  else {
+            urlEntity = await rivenHunter.add(newUrl, platinumLimit, msg.channel.id)
         }
+
+        await msg.reply("URL has been added. Start hunting...")
+
+        await rivenHunter.startHunting(urlEntity, async (rivenMods) => {
+            const embeds = rivenMods.map(mod => makeEmbed(mod))
+            for (const embed of embeds) {
+                await msg.reply(embed)
+            }
+        })
+
     }
 }

@@ -1,8 +1,9 @@
 import * as _ from "lodash";
 import {Bid, RivenWithDetails} from "../structures/RivenWithDetails";
 import {Attribute, Riven} from "../structures/Riven";
+import {MessageEmbed} from "discord.js";
 
-export const makeEmbed = (riven: RivenWithDetails) => {
+export const makeEmbed = (riven: RivenWithDetails) : MessageEmbed => {
     let embed = {
         "color": getColor(riven),
         "fields": [
@@ -33,7 +34,7 @@ export const makeEmbed = (riven: RivenWithDetails) => {
             embed.fields.push(bidsAsField(riven.bids))
         }
     }
-    return embed
+    return new MessageEmbed(embed)
 }
 
 const getColor = (riven) => {

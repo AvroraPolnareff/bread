@@ -8,7 +8,7 @@ import {UniqueRivenRepository} from "../db/repository/UniqueRivenRepository";
 import {RivenListParser} from "../parsers/RivenListParser";
 
 
-export const getNewRivens = async (marketUrl, browser) => {
+export const getNewRivenMods = async (marketUrl, browser) => {
     const repository = getCustomRepository(RivenListRepository)
     const oldRivenList = await repository.findRivenListByUrl(marketUrl)
     const actualRivenList = await getRivenList(marketUrl, browser)

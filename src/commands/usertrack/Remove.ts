@@ -24,7 +24,7 @@ export class Remove implements Command {
             snowflake: preyForDelete.channelId + preyForDelete.guildId
         })
         await preyRepository.delete(preyForDelete)
-        await msg.reply("Url " + preyForDelete.url + " has been successfully deleted from list!")
+        await msg.reply("URL " + preyForDelete.url + " has been successfully deleted from list!")
     }
 
 }

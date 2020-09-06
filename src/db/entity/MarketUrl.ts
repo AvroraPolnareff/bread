@@ -12,9 +12,12 @@ export class MarketUrl {
     url: string
 
     @Column()
-    updateFrequency: number
+    platinumLimit: number
 
     @Column()
-    platinumLimit: number
+    channelId: string
+
+    @Column()
+    guildId: string
 
 }

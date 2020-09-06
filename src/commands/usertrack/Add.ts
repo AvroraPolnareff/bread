@@ -5,7 +5,7 @@ import PQueue from "p-queue";
 import {Logger} from "../../utility/Logger";
 import {getRepository} from "typeorm/index";
 import {BreadUser} from "../../db/entity/BreadUser";
-import {Prey} from "../../db/entity/Prey";
+import {Prey, Status} from "../../db/entity/Prey";
 import {stalkPrey} from "../../fuctions/stalkPrey";
 
 
@@ -35,8 +35,8 @@ export class Add implements Command{
                 status: initPrey.status,
                 lastLogin: Date().toString(),
                 url: args[0],
-                channelId: msg.channel.id,
-                guildId: msg.guild.id,
+                channelId: msg.channel?.id ?? "",
+                guildId: msg.guild?.id ?? "",
                 userId: msg.author.id
             })
             const savedPrey = await preyRepository.save(preyEntity)
@@ -51,21 +51,30 @@ export class Add implements Command{
                 })
 
                 if (userInfo.status !== prey.status) {
-                    const channel = msg.client
-                        .guilds.resolve(guild)
-                        .channels.resolve(channelId) as TextChannel
-                    await channel
-                        .send(`**${userInfo.nickname}** is now ${userInfo.status} on Warframe Market! <@${prey.userId}>`)
+                    const onlineMessage = `<@${prey.userId}>, ${userInfo.nickname} is currently ${userInfo.status} on Warframe Market!`
+                    const offlineMessage = `<@${prey.userId}>, ${userInfo.nickname} just went offline on Warframe Market.`
+                    const message = prey.status === Status.Offline ? offlineMessage : onlineMessage
+                    if (channelId && guild) {
+                        const channel = msg.client
+                            .guilds.resolve(guild)
+                            .channels.resolve(channelId) as TextChannel
+                        await channel
+                            .send(message)
+
+                    } else {
+
+                        await msg.author.send(message)
+                    }
                     const updated = await preyRepository.update({id: prey.id}, {
                         status: userInfo.status,
                         lastLogin: Date.now().toString()
                     })
 
                 }
-            }, userEntity.updateFrequency)
+            }, userEntity.userUpdateFrequency)
             this.timerStorage.add(timer, msg.author.id, TimerCategory.user, savedPrey.channelId + savedPrey.guildId)
 
-            await msg.reply(`Start tracking for user ${initPrey.nickname} at ${Date.now().toString()}`)
+            await msg.reply(`${msg.author.username} has started tracking ${initPrey.nickname} The online status updates will be posted below.`)
 
         } catch (e) {
             this.logger.error(e)
