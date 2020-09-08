@@ -6,7 +6,7 @@ import {TimerStorage} from "../../storages/TimerStorage";
 
 export class Remove implements Command {
     args: string = "index";
-    description: string = "This command will remove the chosen link from the **User Hunter** list assigned to this channel.";
+    description: string = "This command will remove the chosen link from the **User Tracker** list assigned to this channel.";
     name: string = "remove";
     prefix: string = "usertrack";
 
