@@ -1,11 +1,9 @@
-import {BaseClient, Client, ClientOptions, Message, MessageEmbed, TextChannel} from "discord.js";
+import {BaseClient, Client, ClientOptions, Message, TextChannel} from "discord.js";
 import {Logger} from "./utility/Logger";
 import {CommandDispatcher} from "./commands/CommandDispatcher";
 import {TimerCategory, TimerStorage} from "./storages/TimerStorage";
 import {BreadUser as UserEntity} from "./db/entity/BreadUser";
 import {MarketUrl} from "./db/entity/MarketUrl";
-import {huntRivenModsOnce} from "./fuctions/huntRivenModsOnce";
-import {parseUrlQuery} from "./fuctions/parseUrlQuery";
 import PQueue from "p-queue";
 import {getRepository} from "typeorm/index";
 import {decorate, inject, injectable} from "inversify";
@@ -92,7 +90,7 @@ export class LaughingBreadEmoji extends Client {
                 for (let urlEntity of urlEntities) {
                     const rivenHunter = new RivenHunter(user.id, this.promiseQueue, this.timerStorage)
                     await rivenHunter.startHunting(urlEntity, async (rivenMods) => {
-                        const embeds = rivenMods.map(mod => makeEmbed(mod))
+                        const embeds = rivenMods.map(mod => makeEmbed(mod.auction, mod.bids))
                         for (const embed of embeds) {
                             if (urlEntity.guildId && urlEntity.channelId) {
                                 const channel = this.guilds.resolve(urlEntity.guildId).channels.resolve(urlEntity.channelId) as TextChannel

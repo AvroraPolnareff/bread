@@ -3,23 +3,31 @@ import {RivenListRepository} from "../db/repository/RivenListRepository";
 import {Browser} from "puppeteer";
 import * as _ from "lodash";
 import {JSDOM} from "jsdom";
-import {parseRivenList} from "./parseRivenList";
 import {UniqueRivenRepository} from "../db/repository/UniqueRivenRepository";
 import {RivenListParser} from "../parsers/RivenListParser";
+import {Auction, WMAPI} from "../features/RivenHunter";
 
+export const auctionDifference = (a: Auction, b: Auction) => (
+  a.buyout_price === b.buyout_price &&
+  a.top_bid === b.top_bid &&
+  a.is_direct_sell === b.is_direct_sell &&
+  a.owner.id === b.owner.id &&
+  _.isEqual(a.item, b.item) &&
+  a.starting_price === b.starting_price &&
+  a.updated === b.updated
+)
 
-export const getNewRivenMods = async (marketUrl, browser) => {
+export const getNewRivenMods = async (marketUrl: string) => {
+    const api = new WMAPI()
     const repository = getCustomRepository(RivenListRepository)
     const oldRivenList = await repository.findRivenListByUrl(marketUrl)
-    const actualRivenList = await getRivenList(marketUrl, browser)
+    const actualRivenList = await api.auctions(marketUrl)
 
     if (oldRivenList) {
-        const difference = _.differenceWith(actualRivenList, oldRivenList, _.isEqual)
+        const difference = _.differenceWith(actualRivenList, oldRivenList, auctionDifference)
+        await repository.saveRivenList(actualRivenList, marketUrl)
         if (difference.length !== 0) {
-            await repository.saveRivenList(actualRivenList, marketUrl)
-            const uniqueRivenRepository = getCustomRepository(UniqueRivenRepository)
-            const uniqueRivens = await uniqueRivenRepository.getUniqueRivens(difference, marketUrl)
-            return uniqueRivens
+            return difference
         } else {
             return []
         }
@@ -30,6 +38,8 @@ export const getNewRivenMods = async (marketUrl, browser) => {
     }
 
 }
+
+
 
 
 const getRivenList = async (url: string, browser: Browser) => {

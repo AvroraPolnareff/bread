@@ -35,7 +35,7 @@ export class Add implements Command {
         await msg.reply("URL has been added. Start hunting...")
 
         await rivenHunter.startHunting(urlEntity, async (rivenMods) => {
-            const embeds = rivenMods.map(mod => makeEmbed(mod))
+            const embeds = rivenMods.map(mod => makeEmbed(mod.auction, mod.bids))
             for (const embed of embeds) {
                 await msg.reply(embed)
             }
