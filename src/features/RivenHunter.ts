@@ -125,7 +125,7 @@ export class WMAPI {
 
   }
 
-  public auctions = async (url: string) => {
+  public auctions = async (url: string) : Promise<Auction[]> => {
     const urlObject = new URL(url)
     try {
       type ResponseData = {payload: {auctions: Auction[]}}
