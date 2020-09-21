@@ -3,6 +3,8 @@ import {Message} from "discord.js";
 import {getRepository} from "typeorm/index";
 import {Prey} from "../../db/entity/Prey";
 import {TimerStorage} from "../../storages/TimerStorage";
+import PQueue from "p-queue";
+import {UserTracker} from "../../features/UserTracker";
 
 export class Remove implements Command {
     args: string = "index";
@@ -11,20 +13,14 @@ export class Remove implements Command {
     prefix: string = "usertrack";
 
     public constructor(
-        private timerStorage: TimerStorage,
+        private promiseQueue: PQueue,
     ) {
     }
 
     async run(msg: Message, args?: string[]): Promise<void> {
-        const preyRepository = getRepository(Prey)
-        let preys = await preyRepository.find({userId: msg.author.id})
-        const preyForDelete = preys[parseInt(args[0]) - 1]
-        this.timerStorage.stopTimers({
-            userId: msg.author.id,
-            snowflake: preyForDelete.channelId + preyForDelete.guildId
-        })
-        await preyRepository.delete(preyForDelete)
-        await msg.reply("URL " + preyForDelete.url + " has been successfully deleted from list!")
+        const userTracker = new UserTracker(msg.author.id, this.promiseQueue)
+        await userTracker.remove(parseInt(args[0]) - 1, msg.channel.id, msg.guild?.id ?? "")
+        await msg.reply("User has been successfully deleted from list!")
     }
 
 }
