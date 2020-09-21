@@ -139,6 +139,22 @@ export class WMAPI {
   }
 }
 
+export interface Profile {
+  region: string
+  banned: boolean
+  status: "offline" | "online" | "ingame"
+  ingame_name: string
+  background?: string
+  own_profile: boolean
+  about: string
+  last_seen: string
+  achievements: any[]
+  avatar?: string
+  id: string
+  reputation: number
+  platform: string
+}
+
 export interface Bid {
   value: number
   created: string
