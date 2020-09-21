@@ -113,7 +113,8 @@ export class WMAPI {
   constructor() {
     this.instance = axios.create({
       baseURL: this.API_ROOT,
-      headers: {language: this.LANG, platform: this.PLATFORM}
+      headers: {language: this.LANG, platform: this.PLATFORM},
+      timeout: 5000
     })
   }
 
