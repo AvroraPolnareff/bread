@@ -175,7 +175,7 @@ export interface User {
   region: string
   last_seen: string
   ingame_name: string
-  status: "offline" | "online" | "online in game"
+  status: "offline" | "online" | "ingame"
   id: string
   avatar?: string
 }
