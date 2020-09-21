@@ -42,8 +42,8 @@ export class CommandDispatcherImpl implements CommandDispatcher {
             new List(this.promiseQueue, timerStorage),
             new Remove(this.promiseQueue, timerStorage),
             new UserTrackAdd(timerStorage, this.promiseQueue, this.logger),
-            new UserTrackList(),
-            new UserTrackRemove(timerStorage)
+            new UserTrackList(this.promiseQueue),
+            new UserTrackRemove(this.promiseQueue)
 
         ]
     }

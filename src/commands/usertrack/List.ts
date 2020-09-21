@@ -2,6 +2,8 @@ import {Command} from "../Command";
 import {Message, MessageEmbed} from "discord.js";
 import {getRepository} from "typeorm/index";
 import {Prey} from "../../db/entity/Prey";
+import {UserTracker} from "../../features/UserTracker";
+import PQueue from "p-queue";
 
 
 export class List implements Command {
@@ -9,14 +11,13 @@ export class List implements Command {
     name: string = "list";
     prefix: string = "usertrack";
 
+    constructor(
+      private promiseQueue: PQueue
+    ) {}
+
     async run(msg: Message, args?: string[]): Promise<void> {
-        const preyRepository = getRepository(Prey)
-        let preys = await preyRepository.find({userId: msg.author.id})
-        const embed = new MessageEmbed()
-        embed.setTitle('User Tracking Profiles')
-        preys.forEach((prey, index) => {
-            embed.addField(`**${index + 1}:**`, `*${prey.url}*`)
-        })
+        const userTracker = new UserTracker(msg.author.id, this.promiseQueue);
+        const embed = userTracker.list(msg.channel.id, msg.guild?.id ?? "")
         await msg.reply(embed)
     }
 
