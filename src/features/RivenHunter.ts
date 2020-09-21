@@ -3,7 +3,6 @@ import {DeleteResult, getRepository} from "typeorm";
 import {MessageEmbed} from "discord.js";
 import {BreadUser} from "../db/entity/BreadUser";
 import PQueue from "p-queue";
-import {launch} from "puppeteer";
 import {getNewRivenMods} from "../fuctions/getNewRivenMods";
 import {TimerCategory, TimerStorage} from "../storages/TimerStorage";
 import axios, {AxiosInstance} from "axios";
@@ -118,13 +117,20 @@ export class WMAPI {
     })
   }
 
+  public profile = async (nickname: string) : Promise<Profile> => {
+
+    type ResponseData = {payload: {profile: Profile}}
+    const request = await this.instance.get<ResponseData>(`/profile/${nickname}`)
+    return request.data.payload.profile
+
+  }
+
   public auctions = async (url: string) => {
     const urlObject = new URL(url)
     try {
       type ResponseData = {payload: {auctions: Auction[]}}
       const request = await this.instance.get<ResponseData>('/auctions/search', {
-        params: urlObject.searchParams,
-        timeout: 5000
+        params: urlObject.searchParams
       })
       return request.data.payload.auctions
     } catch (e) {
