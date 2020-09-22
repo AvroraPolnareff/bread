@@ -33,11 +33,11 @@ export class Add implements Command{
                   .channels.resolve(channelId) as TextChannel
 
                 if (profile.status === "offline") {
-                    await channel.send(`<@${prey.userId}>, ${prey.nickname} just went offline on Warframe Market.`)
+                    await channel.send(`<@${prey.userId}>, ${prey.nickname} just went **OFFLINE** on Warframe Market.`)
                 } else if (profile.status === "online") {
-                    await channel.send(`<@${prey.userId}>, ${prey.nickname} is currently online on Warframe Market!`)
+                    await channel.send(`<@${prey.userId}>, ${prey.nickname} is currently **ONLINE** on Warframe Market!`)
                 } else {
-                    await channel.send(`<@${prey.userId}>, ${prey.nickname} is currently online in game on Warframe Market!`)
+                    await channel.send(`<@${prey.userId}>, ${prey.nickname} is currently **ONLINE IN GAME** on Warframe Market!`)
                 }
             })
         } catch (e) {
