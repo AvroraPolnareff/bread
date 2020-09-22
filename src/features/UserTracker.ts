@@ -79,7 +79,7 @@ export class UserTracker {
                     lastLogin: profile.last_seen
                 })
             }
-        }, 20000)
+        }, 5000)
     }
 
 
