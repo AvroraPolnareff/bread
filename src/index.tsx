@@ -3,9 +3,19 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'normalize.css/normalize.css'
+import {createGlobalStyle} from "styled-components";
+
+export const GlobalStyle = createGlobalStyle`
+  * {
+    box-sizing: border-box;
+  }
+`;
 
 ReactDOM.render(
   <React.StrictMode>
+    <GlobalStyle/>
     <App />
   </React.StrictMode>,
   document.getElementById('root')
