@@ -1,5 +1,5 @@
 import {Meta, Story} from "@storybook/react/types-6-0";
-import {DropdownList, DropdownListProps, Group, Option} from "../components/DropdownList";
+import {DropdownList, DropdownListProps, Group, Option} from "../components/shared/DropdownList";
 import React from "react";
 import {weapons} from "../weapon";
 

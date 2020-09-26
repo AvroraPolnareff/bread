@@ -1,5 +1,7 @@
-import React, { FC, useMemo, useRef, useState} from "react";
+import React, {FC, useEffect, useMemo, useRef, useState} from "react";
 import styled from "styled-components";
+import {strict} from "assert";
+import {Option} from "./DropdownList";
 
 interface Suggestion {
   label: string
@@ -11,17 +13,30 @@ export interface AutocompleteProps {
   suggestions: Suggestion[]
   placeholder?: string
   value?: string
-  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void
-  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void
-  strict?: boolean
+  onFocusChange?: (focus: boolean) => void
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void
   focus?: boolean
 }
 
 export const Autocomplete: FC<AutocompleteProps> = (props) => {
   const [input, setInput] = useState("")
   const [suggestion, setSuggestion] = useState<Suggestion>()
+  const [focus, setFocus] = useState<boolean>(false)
   const inputEl = useRef<HTMLInputElement>(null)
   const valueFromInputSource = useMemo(() => props.value ?? input, [props.value, input])
+
+  useEffect(() => {
+    if (!inputEl.current) return
+
+    if (props.focus) {
+      inputEl.current.focus()
+      setFocus(true)
+    }
+    else {
+      inputEl.current.blur()
+      setFocus(false)
+    }
+  }, [props.focus])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -32,23 +47,32 @@ export const Autocomplete: FC<AutocompleteProps> = (props) => {
   }
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    props.onBlur?.(e)
+    props.onFocusChange?.(false)
+    setFocus(false)
+  }
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    props.onFocusChange?.(true)
+    setFocus(true)
   }
 
   return (
     <StyledAutocomplete>
       <RealInput
         ref={inputEl}
-        onFocus={props.onFocus}
+        onFocus={handleFocus}
         onBlur={handleBlur}
         onChange={handleInputChange}
         value={valueFromInputSource}
+        onKeyDown={props.onKeyDown}
       />
-      <FakeInput
-        suggestion={suggestion}
-        inputValue={valueFromInputSource}
-        placeholder={props.placeholder}
-      />
+      { focus &&
+        <FakeInput
+          suggestion={suggestion}
+          inputValue={valueFromInputSource}
+          placeholder={props.placeholder}
+        />
+      }
     </StyledAutocomplete>
   )
 }

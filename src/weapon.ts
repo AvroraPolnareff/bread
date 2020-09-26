@@ -9,7 +9,7 @@ export interface Weapon {
   group: string
 }
 
-interface WeaponAttribute {
+export interface WeaponAttribute {
   exclusive_to: string[] | null
   url_name: string
   id: string

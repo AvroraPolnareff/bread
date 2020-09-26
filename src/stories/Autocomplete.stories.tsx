@@ -1,7 +1,7 @@
-import {Autocomplete, AutocompleteProps} from "../components/Autocomplete";
 import {Meta, Story} from "@storybook/react/types-6-0";
 import React from "react";
 import {Wrapper} from "./Wrapper";
+import {Autocomplete, AutocompleteProps} from "../components/shared/Autocomplete";
 
 export default {
   title: 'Autocomplete',

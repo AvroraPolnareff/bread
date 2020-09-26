@@ -1,4 +1,4 @@
-import React, {FC, useMemo} from "react";
+import React, {FC, useEffect, useMemo, useRef} from "react";
 import styled from "styled-components";
 
 export interface Group {
@@ -18,30 +18,10 @@ export interface DropdownListProps {
   onSelect: (option: Option) => void
 }
 
-const parseOptions = (options: (Group | Option)[], searchString: string, onSelect: (option: Option) => void) => {
-  const result: JSX.Element[] = [];
-  searchString = searchString.toLowerCase()
-  for (let option of options) {
-    if ("label" in option && option.label.toLowerCase().indexOf(searchString) !== -1) {
-      // @ts-ignore
-      result.push(<Entry selected={searchString} content={option.label} onClick={() => onSelect(option)}/>)
-    } else if ("type" in option && option.type === "group") {
-      const filteredItems = option.items.filter(item => item.label.toLowerCase().indexOf(searchString) !== -1)
-      if (filteredItems.length) {
-        result.push(<GroupHeader name={option.name}/>)
-        for (let item of filteredItems) {
-          result.push(<Entry selected={searchString} content={item.label} onClick={() => onSelect(item)}/>)
-        }
-      }
-    }
-  }
-  return result
-}
 
 export const DropdownList: FC<DropdownListProps> = ({options, searchString, onSelect}) => {
-
   const displayedOptions = useMemo<JSX.Element[]>(() => {
-    return parseOptions(options, searchString, onSelect)
+    return parseOptions(options, searchString, onSelect);
   }, [options, searchString, onSelect]);
 
   return (
@@ -59,13 +39,47 @@ const StyledDropdownList = styled.ul`
   z-index: 3;
 `
 
+const parseOptions = (
+  options: (Group | Option)[],
+  searchString: string,
+  onSelect: (option: Option) => void,
+) => {
+  const result: JSX.Element[] = [];
+  searchString = searchString.toLowerCase()
+  for (let option of options) {
+    if ("label" in option && option.label.toLowerCase().indexOf(searchString) !== -1) {
+      // @ts-ignore
+      result.push(<Entry
+        selected={searchString}
+        content={option.label}
+        onClick={() => onSelect(option as Option)}
+      />)
+    } else if ("type" in option && option.type === "group") {
+      const filteredItems = option.items.filter(item => item.label.toLowerCase().indexOf(searchString) !== -1)
+      if (filteredItems.length) {
+        result.push(<GroupHeader name={option.name}/>)
+        for (let item of filteredItems) {
+          result.push(<Entry
+            selected={searchString}
+            content={item.label}
+            onClick={() => onSelect(item)}
+          />)
+        }
+      }
+    }
+  }
+  return result
+}
+
 interface EntryProps {
   selected: string,
   content: string,
   onClick?: () => void,
+  onFocus?: () => void,
+  onBlur?: () => void,
 }
 
-const Entry: FC<EntryProps> = ({selected, content, onClick}) => {
+const Entry: FC<EntryProps> = ({selected, content, onClick, onBlur, onFocus}) => {
   const displayingString = useMemo<JSX.Element>(() => {
     if (selected) {
       let start = content.toLowerCase().indexOf(selected.toLowerCase())
@@ -74,7 +88,7 @@ const Entry: FC<EntryProps> = ({selected, content, onClick}) => {
     } else return <span>{content}</span>
   }, [selected, content])
   return (
-    <StyledEntry onClick={onClick}>
+    <StyledEntry tabIndex={1} onClick={onClick} onFocus={onFocus} onBlur={onBlur}>
       {displayingString}
     </StyledEntry>
   )

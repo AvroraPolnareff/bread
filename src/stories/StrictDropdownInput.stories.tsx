@@ -1,23 +1,18 @@
 import {Meta} from "@storybook/react/types-6-0";
-import {TagsInput, TagsInputProps} from "../components/shared/TagsInput";
-import {Story} from "@storybook/react/dist/client/preview/types-6-0";
-
-import {Wrapper} from "./Wrapper";
 import React from "react";
+import { StrictDropdownInputProps, StrictDropdownInput} from "../components/shared/DropdownInput";
+import {Story} from "@storybook/react/dist/client/preview/types-6-0";
 import {weapons} from "../weapon";
 import {Group, Option} from "../components/shared/DropdownList";
-
+import {Wrapper} from "./Wrapper";
 
 export default {
-  title: 'TagsInput',
-  component: TagsInput,
+  title: 'StrictDropdownInput',
+  component: StrictDropdownInput,
 } as Meta;
 
-const Template: Story<TagsInputProps> = args => <Wrapper><TagsInput {...args}/></Wrapper>
-
-export const Default = Template.bind({})
-
 const weaponsDropdown = [
+  {value: 'any', label: 'Any'},
   {type: 'group', name: "primary", items: weapons.filter(weapon => weapon.group === 'primary').map(weapon => ({value: weapon.url_name, label: weapon.item_name} as Option)) } as Group,
   {type: 'group', name: "secondary", items: weapons.filter(weapon => weapon.group === 'secondary').map(weapon => ({value: weapon.url_name, label: weapon.item_name} as Option))} as Group,
   {type: 'group', name: "melee", items: weapons.filter(weapon => weapon.group === 'melee').map(weapon => ({value: weapon.url_name, label: weapon.item_name} as Option))} as Group,
@@ -27,7 +22,11 @@ const weaponsDropdown = [
   {type: 'group', name: "sentinel", items: weapons.filter(weapon => weapon.group === 'sentinel').map(weapon => ({value: weapon.url_name, label: weapon.item_name} as Option))} as Group
 ]
 
+const Template: Story<StrictDropdownInputProps> = args => <Wrapper><StrictDropdownInput {...args}/></Wrapper>
+
+export const Default = Template.bind({});
 Default.args = {
-  options: weaponsDropdown,
-  placeholder: "Any"
-}
+  placeholder: "Any",
+  options: weaponsDropdown
+};
+

@@ -1,9 +1,9 @@
 import {Meta} from "@storybook/react/types-6-0";
 import React from "react";
-import {DropdownInput, DropdownInputProps} from "../components/DropdownInput";
+import {DropdownInput, DropdownInputProps} from "../components/shared/DropdownInput";
 import {Story} from "@storybook/react/dist/client/preview/types-6-0";
 import {weapons} from "../weapon";
-import {Group, Option} from "../components/DropdownList";
+import {Group, Option} from "../components/shared/DropdownList";
 import {Wrapper} from "./Wrapper";
 
 export default {
@@ -27,6 +27,6 @@ const Template: Story<DropdownInputProps> = args => <Wrapper><DropdownInput {...
 export const Default = Template.bind({});
 Default.args = {
   placeholder: "Any",
-  options: weaponsDropdown
+  options: weaponsDropdown,
 };
 
