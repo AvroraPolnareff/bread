@@ -5,7 +5,6 @@ import PQueue from "p-queue";
 import {Message} from "discord.js";
 import {makeEmbed} from "../../functions/embed";
 
-
 export class Add implements Command {
 
   constructor(

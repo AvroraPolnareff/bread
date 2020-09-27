@@ -19,17 +19,10 @@ export class Add implements Command{
 
     async run(msg: Message, args?: string[]): Promise<void> {
         try {
-            const userTracker = new UserTracker(msg.author.id, this.promiseQueue)
+            const userTracker = new UserTracker(msg.author.id, this.promiseQueue, msg.client)
             const prey = await userTracker.add(args[0], msg.channel.id, msg.guild?.id ?? "")
             await msg.reply(`**${msg.author.username}** has started tracking **${prey.nickname}**. The online status updates will be posted below.`)
-            await userTracker.startTracking(prey, async (profile) => {
-                const channelId = prey.channelId
-                const guild = prey.guildId
-                //TODO fix work in dm
-                const channel = msg.client
-                  .guilds.resolve(guild)
-                  .channels.resolve(channelId) as TextChannel
-
+            await userTracker.startTracking(prey, async (profile, channel) => {
                 if (profile.status === "offline") {
                     await channel.send(`<@${prey.userId}>, ${prey.nickname} just went **OFFLINE** on Warframe Market.`)
                 } else if (profile.status === "online") {

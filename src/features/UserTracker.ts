@@ -1,15 +1,17 @@
-import {MessageEmbed} from "discord.js";
+import {Client, DMChannel, MessageEmbed, TextChannel} from "discord.js";
 import {getRepository} from "typeorm";
 import {Prey} from "../db/entity/Prey";
 import {Profile} from "./RivenHunter";
 import PQueue from "p-queue";
 import {WMAPI} from "../api/WMAPI";
+import {fetchChannel} from "../functions/fetchChannel";
 
 
 export class UserTracker {
     constructor(
         private userId : string,
-        private promiseQueue: PQueue
+        private promiseQueue: PQueue,
+        private client: Client
     ) {
     }
 
@@ -62,7 +64,7 @@ export class UserTracker {
 
     public startTracking = async (
       {userId, channelId, guildId, nickname}: Prey,
-      onStatusChanged: (profile: Profile) => void
+      onStatusChanged: (profile: Profile, channel: TextChannel | DMChannel) => void
     ) => {
         const timer = setInterval(async  () => {
             const preyRepository = getRepository(Prey)
@@ -71,14 +73,20 @@ export class UserTracker {
                 clearInterval(timer)
                 return
             }
+
+            const channel = await fetchChannel(userId, guildId, channelId, this.client)
+            if (!channel) {
+                await preyRepository.delete(prey[0])
+                return clearInterval(timer)
+            }
+
             const profile = await this.trackOnce(prey[0])
             if (prey[0].status !== profile.status) {
-                onStatusChanged(profile)
-
                 await preyRepository.update({userId, channelId, guildId, nickname}, {
                     status: profile.status,
                     lastLogin: profile.last_seen
                 })
+                onStatusChanged(profile, channel)
             }
         }, 5000)
     }

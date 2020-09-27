@@ -1,4 +1,4 @@
-import {BaseClient, Client, ClientOptions, Message, TextChannel} from "discord.js";
+import {BaseClient, Client, ClientOptions, Message} from "discord.js";
 import {Logger} from "./utility/Logger";
 import {CommandDispatcher} from "./commands/CommandDispatcher";
 import {BreadUser as UserEntity} from "./db/entity/BreadUser";
@@ -19,7 +19,6 @@ decorate(injectable(), EventEmitter)
 
 @injectable()
 export class LaughingBreadEmoji extends Client {
-
   constructor(
     @inject(TYPES.Logger) private logger: Logger,
     @inject(TYPES.PQueue) private promiseQueue: PQueue,
@@ -48,21 +47,13 @@ export class LaughingBreadEmoji extends Client {
       const preyRepository = getRepository(Prey)
       const userEntities = await userRepository.find()
 
-
       for (let {userId} of userEntities) {
         const user = await this.users.fetch(userId)
         let preys = await preyRepository.find({userId: userId})
 
         for (const prey of preys) {
-          const userTracker = new UserTracker(userId, this.promiseQueue)
-          await userTracker.startTracking(prey, async profile => {
-            const channelId = prey.channelId
-            const guild = prey.guildId
-            //TODO fix work in dm
-            const channel = this
-              .guilds.resolve(guild)
-              .channels.resolve(channelId) as TextChannel
-
+          const userTracker = new UserTracker(userId, this.promiseQueue, this)
+          await userTracker.startTracking(prey, async (profile, channel) => {
             if (profile.status === "offline") {
               await channel.send(`<@${prey.userId}>, ${prey.nickname} just went **OFFLINE** on Warframe Market.`)
             } else if (profile.status === "online") {
@@ -73,9 +64,7 @@ export class LaughingBreadEmoji extends Client {
           })
         }
 
-
         const urlEntities = await urlRepository.find({userId})
-
         for (let urlEntity of urlEntities) {
           const rivenHunter = new RivenHunter(user.id, this.promiseQueue)
           await rivenHunter.startHunting(urlEntity, this, async (rivenMods, channel) => {
