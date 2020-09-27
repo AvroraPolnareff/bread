@@ -1,5 +1,5 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
-import {TableColumn} from "typeorm/index";
+import {TableColumn} from "typeorm";
 
 export class GuildChannelColumnsMarketUrl1599300554025 implements MigrationInterface {
 

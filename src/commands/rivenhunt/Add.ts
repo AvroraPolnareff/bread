@@ -3,7 +3,7 @@ import {MarketUrl} from "../../db/entity/MarketUrl";
 import {RivenHunter} from "../../features/RivenHunter";
 import PQueue from "p-queue";
 import {Message} from "discord.js";
-import {makeEmbed} from "../../fuctions/embed";
+import {makeEmbed} from "../../functions/embed";
 
 
 export class Add implements Command {

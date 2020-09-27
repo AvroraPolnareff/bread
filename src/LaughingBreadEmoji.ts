@@ -10,7 +10,7 @@ import TYPES from "./types/types";
 import {EventEmitter} from "events";
 import {Prey} from "./db/entity/Prey";
 import {RivenHunter} from "./features/RivenHunter";
-import {makeEmbed} from "./fuctions/embed";
+import {makeEmbed} from "./functions/embed";
 import {UserTracker} from "./features/UserTracker";
 
 decorate(injectable(), Client)

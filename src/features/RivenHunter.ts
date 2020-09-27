@@ -1,11 +1,10 @@
 import {MarketUrl} from "../db/entity/MarketUrl";
-import {DeleteResult, getRepository} from "typeorm";
+import {DeleteResult, getCustomRepository, getRepository} from "typeorm";
 import {Client, DMChannel, MessageEmbed, TextChannel} from "discord.js";
-import {BreadUser} from "../db/entity/BreadUser";
 import PQueue from "p-queue";
-import {getNewRivenMods} from "../fuctions/getNewRivenMods";
-import {displayingPrice} from "../fuctions/embed";
+import {displayingPrice} from "../functions/embed";
 import {WMAPI} from "../api/WMAPI";
+import {RivenListRepository} from "../db/repository/RivenListRepository";
 
 type AuctionWithBids = { auction: Auction, bids: Bid[] }
 
@@ -46,7 +45,8 @@ export class RivenHunter {
 
   public huntOnce = async (urlEntity: MarketUrl): Promise<AuctionWithBids[]> => {
     return await this.promiseQueue.add(async () => {
-      const rivenMods = await getNewRivenMods(urlEntity.url)
+      const rivenRepository = getCustomRepository(RivenListRepository)
+      const rivenMods = await rivenRepository.fetchNewRivenMods(urlEntity.url)
       const api = new WMAPI()
       const auctionsWithBids: AuctionWithBids[] = []
       for (const el of rivenMods) {
