@@ -4,11 +4,9 @@ import {Client, DMChannel, MessageEmbed, TextChannel} from "discord.js";
 import {BreadUser} from "../db/entity/BreadUser";
 import PQueue from "p-queue";
 import {getNewRivenMods} from "../fuctions/getNewRivenMods";
-import {TimerCategory, TimerStorage} from "../storages/TimerStorage";
-import axios, {AxiosInstance} from "axios";
-import {URL} from "url";
+import {TimerStorage} from "../storages/TimerStorage";
 import {displayingPrice} from "../fuctions/embed";
-
+import {WMAPI} from "../api/WMAPI";
 
 type AuctionWithBids = { auction: Auction, bids: Bid[] }
 
@@ -23,7 +21,6 @@ export class RivenHunter {
 
   public add = async (url: string, platinumLimit: number, channelId: string, guildId?: string) => {
     const userRepository = getRepository(BreadUser)
-    const userEntity = await userRepository.findOne({userId: this.userId})
     const urlRepository = getRepository(MarketUrl)
     const urls = await urlRepository.find({userId: this.userId})
 
@@ -116,49 +113,6 @@ export class RivenHunter {
 
     const urls = await urlRepository.find({userId: this.userId, channelId: channelId, guildId: guildId ?? ''})
     return await urlRepository.delete(urls[index])
-  }
-}
-
-export class WMAPI {
-  private readonly API_ROOT = 'https://api.warframe.market/v1'
-  private readonly LANG = 'en'
-  private readonly PLATFORM = 'pc'
-
-  private instance: AxiosInstance
-
-  constructor() {
-    this.instance = axios.create({
-      baseURL: this.API_ROOT,
-      headers: {language: this.LANG, platform: this.PLATFORM},
-      timeout: 5000
-    })
-  }
-
-  public profile = async (nickname: string): Promise<Profile> => {
-
-    type ResponseData = { payload: { profile: Profile } }
-    const request = await this.instance.get<ResponseData>(`/profile/${nickname}`)
-    return request.data.payload.profile
-
-  }
-
-  public auctions = async (url: string): Promise<Auction[]> => {
-    const urlObject = new URL(url)
-    try {
-      type ResponseData = { payload: { auctions: Auction[] } }
-      const request = await this.instance.get<ResponseData>('/auctions/search', {
-        params: urlObject.searchParams
-      })
-      return request.data.payload.auctions
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  public bids = async (id: string) => {
-    type responseData = { payload: { bids: Bid[] } }
-    const request = await this.instance.get<responseData>(`/auctions/entry/${id}/bids`)
-    return request.data.payload.bids
   }
 }
 

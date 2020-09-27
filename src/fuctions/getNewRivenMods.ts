@@ -3,9 +3,9 @@ import {RivenListRepository} from "../db/repository/RivenListRepository";
 import {Browser} from "puppeteer";
 import * as _ from "lodash";
 import {JSDOM} from "jsdom";
-import {UniqueRivenRepository} from "../db/repository/UniqueRivenRepository";
 import {RivenListParser} from "../parsers/RivenListParser";
-import {Auction, WMAPI} from "../features/RivenHunter";
+import {Auction} from "../features/RivenHunter";
+import {WMAPI} from "../api/WMAPI";
 
 export const auctionDifference = (a: Auction, b: Auction) => (
   a.buyout_price === b.buyout_price &&
@@ -36,7 +36,6 @@ export const getNewRivenMods = async (marketUrl: string) => {
         await repository.saveRivenList(actualRivenList, marketUrl)
         return []
     }
-
 }
 
 

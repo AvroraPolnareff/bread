@@ -1,4 +1,5 @@
-import {Auction, Bid, WMAPI} from "../features/RivenHunter";
+import {Auction, Bid} from "../features/RivenHunter";
+import {WMAPI} from "../api/WMAPI";
 
 
 const data : Auction[] = [{"buyout_price": 1231, "private": false, "note": "<p>haha</p>", "item": {"re_rolls": 0, "polarity": "madurai", "name": "geli-mantitio", "weapon_url_name": "imperator", "attributes": [{"value": 32.0, "positive": true, "url_name": "cold_damage"}, {"value": 32.0, "positive": true, "url_name": "damage_vs_corpus"}, {"value": 32.0, "positive": true, "url_name": "electric_damage"}, {"value": -32.0, "positive": false, "url_name": "damage_vs_grineer"}], "type": "riven", "mastery_level": 8, "mod_rank": 0}, "minimal_reputation": 0, "starting_price": 1, "owner": {"reputation": 2, "reputation_bonus": 0, "region": "en", "last_seen": "2020-09-13T11:30:52.318+00:00", "ingame_name": "Hippothoe", "avatar": "user/avatar/5a96bbbbe9df0c0ad343b3d6.png?da2ce2b7fc36e028592cc73a03f2a305", "status": "offline", "id": "5a96bbbbe9df0c0ad343b3d6"}, "platform": "pc", "closed": false, "top_bid": 2, "winner": null, "is_marked_for": null, "marked_operation_at": null, "created": "2020-04-13T15:05:38.000+00:00", "updated": "2020-09-13T11:29:40.000+00:00", "note_raw": "haha", "is_direct_sell": false, "visible": true, "id": "5e947fc2ebde7c07ad3ef630"}]

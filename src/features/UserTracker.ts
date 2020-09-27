@@ -1,8 +1,9 @@
 import {MessageEmbed} from "discord.js";
 import {getRepository} from "typeorm";
 import {Prey} from "../db/entity/Prey";
-import {Profile, WMAPI} from "./RivenHunter";
+import {Profile} from "./RivenHunter";
 import PQueue from "p-queue";
+import {WMAPI} from "../api/WMAPI";
 
 
 export class UserTracker {
