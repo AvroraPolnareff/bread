@@ -74,21 +74,23 @@ export class RivenHunter {
   ) => {
     const timer = setInterval(async () => {
       const urlRepository = getRepository(MarketUrl)
-      const newUrlEntity = await urlRepository.find(urlEntity)
+
 
       let channel: TextChannel | DMChannel
       const user = await client.users.fetch(urlEntity.userId)
-      if (!user) return urlRepository.delete(urlEntity)
+      if (!user) await urlRepository.delete(urlEntity)
       channel = user.dmChannel
 
       if (urlEntity.guildId) {
         const guild = await client.guilds.fetch(urlEntity.guildId)
-        if (!user) return urlRepository.delete(urlEntity)
+        if (!user) await urlRepository.delete(urlEntity)
 
         channel = guild.channels.resolve(urlEntity.channelId) as TextChannel
       }
 
-      if (!user) return urlRepository.delete(urlEntity)
+      if (!user) await urlRepository.delete(urlEntity)
+
+      const newUrlEntity = await urlRepository.find(urlEntity)
       if (!newUrlEntity.length) {
         clearInterval(timer)
         return
