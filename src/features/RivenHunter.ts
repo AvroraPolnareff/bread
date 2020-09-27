@@ -5,6 +5,7 @@ import PQueue from "p-queue";
 import {displayingPrice} from "../functions/embed";
 import {WMAPI} from "../api/WMAPI";
 import {RivenListRepository} from "../db/repository/RivenListRepository";
+import {fetchChannel} from "../functions/fetchChannel";
 
 type AuctionWithBids = { auction: Auction, bids: Bid[] }
 
@@ -23,23 +24,15 @@ export class RivenHunter {
     }
 
     let entity: MarketUrl
-    if (guildId) {
-      entity = urlRepository.create({
-        userId: this.userId,
-        url: url,
-        channelId: channelId,
-        guildId: guildId,
-        platinumLimit: platinumLimit
-      })
-    } else {
-      entity = urlRepository.create({
-        userId: this.userId,
-        url: url,
-        channelId: channelId,
-        guildId: '',
-        platinumLimit: platinumLimit
-      })
-    }
+
+    entity = urlRepository.create({
+      userId: this.userId,
+      url: url,
+      channelId: channelId,
+      guildId: guildId ?? "",
+      platinumLimit: platinumLimit
+    })
+
     return await urlRepository.save(entity)
   }
 
@@ -67,28 +60,21 @@ export class RivenHunter {
     const timer = setInterval(async () => {
       const urlRepository = getRepository(MarketUrl)
 
-
-      let channel: TextChannel | DMChannel
-      const user = await client.users.fetch(urlEntity.userId)
-      if (!user) await urlRepository.delete(urlEntity)
-      channel = user.dmChannel
-
-      if (urlEntity.guildId) {
-        const guild = await client.guilds.fetch(urlEntity.guildId)
-        if (!user) await urlRepository.delete(urlEntity)
-
-        channel = guild.channels.resolve(urlEntity.channelId) as TextChannel
-      }
-
-      if (!channel) await urlRepository.delete(urlEntity)
-
       const newUrlEntity = await urlRepository.find(urlEntity)
       if (!newUrlEntity.length) {
-        clearInterval(timer)
-        return
+        return clearInterval(timer)
       }
+
+      const channel = await fetchChannel(urlEntity.userId, urlEntity.guildId, urlEntity.channelId, client)
+      if (!channel) {
+        await urlRepository.delete(urlEntity)
+        return clearInterval(timer)
+      }
+
       const rivenMods = await this.huntOnce(urlEntity)
-      onNewRivenMods(rivenMods, channel)
+      if (rivenMods.length) {
+        onNewRivenMods(rivenMods, channel)
+      }
     }, 10000)
   }
 
