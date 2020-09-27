@@ -88,7 +88,7 @@ export class RivenHunter {
         channel = guild.channels.resolve(urlEntity.channelId) as TextChannel
       }
 
-      if (!user) await urlRepository.delete(urlEntity)
+      if (!channel) await urlRepository.delete(urlEntity)
 
       const newUrlEntity = await urlRepository.find(urlEntity)
       if (!newUrlEntity.length) {
