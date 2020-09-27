@@ -1,6 +1,5 @@
-import {EntityRepository, getCustomRepository, Repository} from "typeorm";
+import {EntityRepository, Repository} from "typeorm";
 import {RivenList} from "../entity/RivenList";
-import {Riven} from "../../structures/Riven";
 import {Auction} from "../../features/RivenHunter";
 import {WMAPI} from "../../api/WMAPI";
 import * as _ from "lodash";

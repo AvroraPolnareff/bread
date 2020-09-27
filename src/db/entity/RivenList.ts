@@ -1,5 +1,4 @@
 import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
-import {Riven} from "../../structures/Riven";
 
 @Entity()
 export class RivenList {
