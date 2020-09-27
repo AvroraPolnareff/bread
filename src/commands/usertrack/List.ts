@@ -1,7 +1,5 @@
 import {Command} from "../Command";
-import {Message, MessageEmbed} from "discord.js";
-import {getRepository} from "typeorm/index";
-import {Prey} from "../../db/entity/Prey";
+import {Message} from "discord.js";
 import {UserTracker} from "../../features/UserTracker";
 import PQueue from "p-queue";
 
@@ -17,7 +15,7 @@ export class List implements Command {
 
     async run(msg: Message, args?: string[]): Promise<void> {
         const userTracker = new UserTracker(msg.author.id, this.promiseQueue);
-        const embed = userTracker.list(msg.channel.id, msg.guild?.id ?? "")
+        const embed = await userTracker.list(msg.channel.id, msg.guild?.id ?? "")
         await msg.reply(embed)
     }
 
