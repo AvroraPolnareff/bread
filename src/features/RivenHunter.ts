@@ -1,6 +1,6 @@
 import {MarketUrl} from "../db/entity/MarketUrl";
 import {DeleteResult, getRepository} from "typeorm";
-import {MessageEmbed} from "discord.js";
+import {Client, DMChannel, MessageEmbed, TextChannel} from "discord.js";
 import {BreadUser} from "../db/entity/BreadUser";
 import PQueue from "p-queue";
 import {getNewRivenMods} from "../fuctions/getNewRivenMods";
@@ -10,7 +10,7 @@ import {URL} from "url";
 import {displayingPrice} from "../fuctions/embed";
 
 
-type AuctionWithBids = {auction: Auction, bids: Bid[]}
+type AuctionWithBids = { auction: Auction, bids: Bid[] }
 
 export class RivenHunter {
   constructor(
@@ -68,20 +68,34 @@ export class RivenHunter {
   }
 
   public startHunting = async (
-    urlEntity: MarketUrl, onNewRivenMods: (rivenMods: AuctionWithBids[]) => void
+    urlEntity: MarketUrl,
+    client: Client,
+    onNewRivenMods: (rivenMods: AuctionWithBids[], channel: TextChannel | DMChannel) => void
   ) => {
-    const userRepository = getRepository(BreadUser)
     const timer = setInterval(async () => {
       const urlRepository = getRepository(MarketUrl)
       const newUrlEntity = await urlRepository.find(urlEntity)
+
+      let channel: TextChannel | DMChannel
+      const user = await client.users.fetch(urlEntity.userId)
+      if (!user) return urlRepository.delete(urlEntity)
+      channel = user.dmChannel
+
+      if (urlEntity.guildId) {
+        const guild = await client.guilds.fetch(urlEntity.guildId)
+        if (!user) return urlRepository.delete(urlEntity)
+
+        channel = guild.channels.resolve(urlEntity.channelId) as TextChannel
+      }
+
+      if (!user) return urlRepository.delete(urlEntity)
       if (!newUrlEntity.length) {
         clearInterval(timer)
         return
       }
       const rivenMods = await this.huntOnce(urlEntity)
-      onNewRivenMods(rivenMods)
-    }, 20000)
-    this.timerStorage.add(timer, this.userId, TimerCategory.riven, urlEntity.channelId + urlEntity.guildId)
+      onNewRivenMods(rivenMods, channel)
+    }, 10000)
   }
 
   public list = async (channelId: string, guildId?: string): Promise<MessageEmbed> => {
@@ -108,7 +122,8 @@ export class WMAPI {
   private readonly LANG = 'en'
   private readonly PLATFORM = 'pc'
 
-  private instance : AxiosInstance
+  private instance: AxiosInstance
+
   constructor() {
     this.instance = axios.create({
       baseURL: this.API_ROOT,
@@ -117,18 +132,18 @@ export class WMAPI {
     })
   }
 
-  public profile = async (nickname: string) : Promise<Profile> => {
+  public profile = async (nickname: string): Promise<Profile> => {
 
-    type ResponseData = {payload: {profile: Profile}}
+    type ResponseData = { payload: { profile: Profile } }
     const request = await this.instance.get<ResponseData>(`/profile/${nickname}`)
     return request.data.payload.profile
 
   }
 
-  public auctions = async (url: string) : Promise<Auction[]> => {
+  public auctions = async (url: string): Promise<Auction[]> => {
     const urlObject = new URL(url)
     try {
-      type ResponseData = {payload: {auctions: Auction[]}}
+      type ResponseData = { payload: { auctions: Auction[] } }
       const request = await this.instance.get<ResponseData>('/auctions/search', {
         params: urlObject.searchParams
       })
@@ -139,7 +154,7 @@ export class WMAPI {
   }
 
   public bids = async (id: string) => {
-    type responseData = {payload: {bids: Bid[]}}
+    type responseData = { payload: { bids: Bid[] } }
     const request = await this.instance.get<responseData>(`/auctions/entry/${id}/bids`)
     return request.data.payload.bids
   }
