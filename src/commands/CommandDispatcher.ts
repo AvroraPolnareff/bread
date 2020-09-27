@@ -3,7 +3,6 @@ import {Ping} from "./Ping";
 import {List} from "./rivenhunt/List";
 import {Add} from "./rivenhunt/Add";
 import {Remove} from "./rivenhunt/Remove";
-import {TimerStorage} from "../storages/TimerStorage";
 import {inject, injectable} from "inversify";
 import {Message, MessageEmbed, User} from "discord.js";
 import {BreadUser as UserEntity} from "../db/entity/BreadUser";
@@ -30,7 +29,6 @@ export class CommandDispatcherImpl implements CommandDispatcher {
     private logger: Logger
 
     constructor(
-        @inject(TYPES.TimerStorage) timerStorage: TimerStorage,
         @inject(TYPES.PQueue) promiseQueue: PQueue,
         @inject(TYPES.Logger) logger: Logger
     ) {
@@ -38,10 +36,10 @@ export class CommandDispatcherImpl implements CommandDispatcher {
         this.promiseQueue = promiseQueue
         this.commands = [
             Ping,
-            new Add(this.promiseQueue, timerStorage),
-            new List(this.promiseQueue, timerStorage),
-            new Remove(this.promiseQueue, timerStorage),
-            new UserTrackAdd(timerStorage, this.promiseQueue, this.logger),
+            new Add(this.promiseQueue),
+            new List(this.promiseQueue),
+            new Remove(this.promiseQueue),
+            new UserTrackAdd(this.promiseQueue, this.logger),
             new UserTrackList(this.promiseQueue),
             new UserTrackRemove(this.promiseQueue)
 

@@ -2,7 +2,6 @@ import {Command} from "../Command";
 import {MarketUrl} from "../../db/entity/MarketUrl";
 import {RivenHunter} from "../../features/RivenHunter";
 import PQueue from "p-queue";
-import {TimerStorage} from "../../storages/TimerStorage";
 import {Message} from "discord.js";
 import {makeEmbed} from "../../fuctions/embed";
 
@@ -11,7 +10,6 @@ export class Add implements Command {
 
   constructor(
     private promiseQueue: PQueue,
-    private timerStorage: TimerStorage
   ) {}
 
   public name = 'add'
@@ -20,7 +18,7 @@ export class Add implements Command {
   public args = "url"
 
   async run(msg: Message, args: string[]): Promise<void> {
-    const rivenHunter = new RivenHunter(msg.author.id, this.promiseQueue, this.timerStorage)
+    const rivenHunter = new RivenHunter(msg.author.id, this.promiseQueue)
     const newUrl = args[0]
     let platinumLimit : number = -1
     while (platinumLimit > 1147483647 || platinumLimit < 0 ) {

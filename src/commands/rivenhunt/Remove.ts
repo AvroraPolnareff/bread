@@ -1,10 +1,7 @@
 import {Command} from "../Command";
-import {Message, MessageEmbed} from "discord.js";
-import {getRepository} from "typeorm";
-import {MarketUrl} from "../../db/entity/MarketUrl";
+import {Message} from "discord.js";
 import {RivenHunter} from "../../features/RivenHunter";
 import PQueue from "p-queue";
-import {TimerStorage} from "../../storages/TimerStorage";
 
 
 export class Remove implements Command {
@@ -16,13 +13,12 @@ export class Remove implements Command {
 
     constructor(
         private promiseQueue: PQueue,
-        private timerStorage: TimerStorage
     ) {}
 
 
     async run(msg: Message, args?: string[]): Promise<void> {
         const index = parseInt(args[0]) - 1
-        const rivenHunter = new RivenHunter(msg.author.id, this.promiseQueue, this.timerStorage)
+        const rivenHunter = new RivenHunter(msg.author.id, this.promiseQueue)
         if (msg.guild) {
             await rivenHunter.remove(index, msg.channel.id, msg.guild.id)
         } else {

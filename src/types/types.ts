@@ -1,7 +1,6 @@
 import {LaughingBreadEmoji} from "../LaughingBreadEmoji";
 
 let TYPES = {
-    TimerStorage: Symbol.for('TimerStorage'),
     BaseCommand: Symbol.for("BaseCommand"),
     CommandDispatcher: Symbol.for('CommandHandler'),
     PQueue: Symbol.for('PQueue'),

@@ -1,7 +1,6 @@
 import "reflect-metadata"
 import {Container} from "inversify";
 import TYPES from "./types/types";
-import {TimerStorage, TimerStorageImpl} from "./storages/TimerStorage";
 import {CommandDispatcher, CommandDispatcherImpl} from "./commands/CommandDispatcher";
 import PQueue from "p-queue";
 import {Logger} from "./utility/Logger";
@@ -21,9 +20,7 @@ if (process.env.LOGGLY_TOKEN && process.env.LOGGLY_DOMAIN) {
 } else {
     container.bind<Logger>(TYPES.Logger).to(ConsoleLogger)
 }
-
 container.bind<CommandDispatcher>(TYPES.CommandDispatcher).to(CommandDispatcherImpl)
-container.bind<TimerStorage>(TYPES.TimerStorage).to(TimerStorageImpl)
 container.bind<PQueue>(TYPES.PQueue).toConstantValue(new PQueue({concurrency: 1}))
 
 container.bind<LaughingBreadEmoji>(TYPES.LaughingBreadEmoji).to(LaughingBreadEmoji)

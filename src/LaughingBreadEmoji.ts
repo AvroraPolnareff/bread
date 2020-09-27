@@ -1,7 +1,6 @@
 import {BaseClient, Client, ClientOptions, Message, TextChannel} from "discord.js";
 import {Logger} from "./utility/Logger";
 import {CommandDispatcher} from "./commands/CommandDispatcher";
-import {TimerStorage} from "./storages/TimerStorage";
 import {BreadUser as UserEntity} from "./db/entity/BreadUser";
 import {MarketUrl} from "./db/entity/MarketUrl";
 import PQueue from "p-queue";
@@ -25,7 +24,6 @@ export class LaughingBreadEmoji extends Client {
     @inject(TYPES.Logger) private logger: Logger,
     @inject(TYPES.PQueue) private promiseQueue: PQueue,
     @inject(TYPES.CommandDispatcher) private commandDispatcher: CommandDispatcher,
-    @inject(TYPES.TimerStorage) private timerStorage: TimerStorage,
     @inject(TYPES.clientConfig) options?: ClientOptions
   ) {
     super(options);
@@ -79,7 +77,7 @@ export class LaughingBreadEmoji extends Client {
         const urlEntities = await urlRepository.find({userId})
 
         for (let urlEntity of urlEntities) {
-          const rivenHunter = new RivenHunter(user.id, this.promiseQueue, this.timerStorage)
+          const rivenHunter = new RivenHunter(user.id, this.promiseQueue)
           await rivenHunter.startHunting(urlEntity, this, async (rivenMods, channel) => {
             const embeds = rivenMods.map(mod => makeEmbed(mod.auction, mod.bids))
             for (const embed of embeds) {

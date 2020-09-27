@@ -1,6 +1,5 @@
 import {Command} from "../Command";
 import {Message, MessageEmbed, TextChannel} from "discord.js";
-import { TimerStorage} from "../../storages/TimerStorage";
 import PQueue from "p-queue";
 import {Logger} from "../../utility/Logger";
 import {UserTracker} from "../../features/UserTracker";
@@ -13,7 +12,6 @@ export class Add implements Command{
     prefix: string = "usertrack";
 
     public constructor(
-        private timerStorage: TimerStorage,
         private promiseQueue: PQueue,
         private logger: Logger
     ) {

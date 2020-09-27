@@ -4,7 +4,6 @@ import {Client, DMChannel, MessageEmbed, TextChannel} from "discord.js";
 import {BreadUser} from "../db/entity/BreadUser";
 import PQueue from "p-queue";
 import {getNewRivenMods} from "../fuctions/getNewRivenMods";
-import {TimerStorage} from "../storages/TimerStorage";
 import {displayingPrice} from "../fuctions/embed";
 import {WMAPI} from "../api/WMAPI";
 
@@ -14,13 +13,9 @@ export class RivenHunter {
   constructor(
     private userId: string,
     private promiseQueue: PQueue,
-    private timerStorage: TimerStorage
-  ) {
-
-  }
+  ) {}
 
   public add = async (url: string, platinumLimit: number, channelId: string, guildId?: string) => {
-    const userRepository = getRepository(BreadUser)
     const urlRepository = getRepository(MarketUrl)
     const urls = await urlRepository.find({userId: this.userId})
 

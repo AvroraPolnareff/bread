@@ -1,8 +1,5 @@
 import {Command} from "../Command";
 import {Message} from "discord.js";
-import {getRepository} from "typeorm/index";
-import {Prey} from "../../db/entity/Prey";
-import {TimerStorage} from "../../storages/TimerStorage";
 import PQueue from "p-queue";
 import {UserTracker} from "../../features/UserTracker";
 
