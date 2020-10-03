@@ -1,0 +1,10 @@
+{
+  "extends": "tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "jsx": "react",
+    "paths": {
+      "@bread/discord-bot" : ["apps/discord-bot/src"]
+    }
+  }
+}
