@@ -1,0 +1,11 @@
+build/**/*
+dist/**/*
+database.sqlite
+node_modules
+yarn.lock
+Thumbs.db
+.env
+package-lock.json
+.idea
+*.iml
+
