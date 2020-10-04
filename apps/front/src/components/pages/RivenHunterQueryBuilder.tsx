@@ -21,7 +21,7 @@ export const RivenHunterQueryBuilder: FC = () => {
   const disabled = useMemo(() => !positive.length && !negative.length, [positive, negative])
 
   useEffect(() => {
-    axios.get(`http://localhost:4000/api/v1/${secret}`).then(res => {
+    axios.get(`/api/v1/${secret}`).then(res => {
       console.log(res)
       setLoading(false)
       if (res.status === 200) {

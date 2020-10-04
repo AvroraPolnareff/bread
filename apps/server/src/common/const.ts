@@ -1,0 +1,4 @@
+export enum consts {
+  DATABASE_CONNECTION="DATABASE_CONNECTION",
+
+}

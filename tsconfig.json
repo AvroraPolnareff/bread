@@ -1,10 +1,13 @@
 {
-  "extends": "tsconfig.build.json",
+  "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "baseUrl": "./",
     "jsx": "react",
+    "types": ["node"],
     "paths": {
-      "@bread/discord-bot" : ["apps/discord-bot/src"]
+      "@bread/discord-bot" : ["apps/discord-bot/src"],
+      "@bread/front": ["apps/front/src"],
+      "@bread/serve": ["apps/server/src"]
     }
   }
 }
