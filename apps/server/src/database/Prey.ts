@@ -1,7 +1,7 @@
 import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
-export class MarketUrlEntity {
+export class Prey {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -9,15 +9,21 @@ export class MarketUrlEntity {
     userId: string
 
     @Column()
-    url: string
+    nickname: string
 
     @Column()
-    platinumLimit: number
+    status: string
+
+    @Column()
+    lastLogin: string
+
+    @Column()
+    url: string
 
     @Column()
     channelId: string
 
     @Column()
     guildId: string
-
 }
+

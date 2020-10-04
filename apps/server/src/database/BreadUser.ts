@@ -2,7 +2,7 @@ import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 
 @Entity()
-export class BreadUserEntity {
+export class BreadUser {
 
     @PrimaryGeneratedColumn()
     id: number
