@@ -1,6 +1,6 @@
 import {Column, Connection, Entity, EntityRepository, PrimaryGeneratedColumn, Repository} from "typeorm";
 import * as _ from "lodash";
-import {Auction, WfMarketAPI} from "@bread/wf-market";
+import {Auction, Bid, WfMarketAPI} from "@bread/wf-market";
 import {consts} from "../common/const";
 import {Inject, Injectable} from "@nestjs/common";
 
@@ -11,8 +11,15 @@ export class RivenListService {
     private rivenListRepository: RivenListRepository
   ) {}
 
-  async fetchNewRivenMods(marketURL: string): Promise<Auction[]> {
-    return await this.rivenListRepository.fetchNewRivenMods(marketURL)
+  async fetchNewRivenMods(marketURL: string): Promise<{auction: Auction, bids: Bid[]}[]> {
+    const rivenMods = await this.rivenListRepository.fetchNewRivenMods(marketURL)
+    const auctionsWithBids: {auction: Auction, bids: Bid[]}[] = []
+    const api = new WfMarketAPI()
+    for (const el of rivenMods) {
+        const bids = await api.bids(el.id)
+        auctionsWithBids.push({auction: el, bids: bids})
+    }
+    return auctionsWithBids
   }
 }
 
