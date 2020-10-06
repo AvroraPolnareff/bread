@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import {MessageEmbed} from "discord.js";
-import {Attribute, Auction, Bid} from "../features/RivenHunter";
 import {weaponAttributes, weapons} from "../utility/weapon";
+import {Attribute, Auction, Bid} from "@bread/wf-market";
 
 export const makeEmbed = (riven: Auction, bids: Bid[]) : MessageEmbed => {
     const weapon = weapons.find(weapon => weapon.url_name === riven.item.weapon_url_name)
@@ -120,9 +120,9 @@ const attributesAsFields = (attributes: Attribute[]) => {
 
 function timeSince(date) {
 
-    var seconds = Math.floor((Date.now() - date) / 1000);
+    let seconds = Math.floor((Date.now() - date) / 1000);
 
-    var interval = seconds / 31536000;
+    let interval = seconds / 31536000;
 
     if (interval > 1) {
         return Math.floor(interval) + " years";

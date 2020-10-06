@@ -1,39 +1,20 @@
-import {createConnection} from "typeorm";
 import {Module} from "@nestjs/common";
-import {RivenList, rivenListProviders, RivenListService} from "./RivenList";
-import {consts} from "../common/const";
-import {MarketUrl, marketUrlProviders, MarketUrlService} from "./MarketUrl";
-
-
-export const databaseProviders = [
-  {
-    provide: consts.DATABASE_CONNECTION,
-    useFactory: async () => await createConnection({
-      type: 'postgres',
-      url: process.env.DATABASE_URL,
-      entities: [
-        MarketUrl, RivenList
-      ],
-      synchronize: true,
-    }),
-  },
-];
+import {MarketUrl,  MarketUrlService} from "./MarketUrl";
+import {TypeOrmModule} from "@nestjs/typeorm";
+import {RivenListRepository} from "./RivenListRepository";
+import {RivenListService} from "./RivenListService";
 
 @Module({
-  providers: [...databaseProviders],
-  exports: [...databaseProviders]
+  imports: [TypeOrmModule.forFeature([MarketUrl])],
+  providers: [MarketUrlService],
+  exports: [MarketUrlService]
 })
-export class DatabaseModule {}
+export class MarketUrlModule {}
 
 @Module({
-  imports: [DatabaseModule],
-  providers: [...rivenListProviders, RivenListService],
-
+  imports: [TypeOrmModule.forFeature([RivenListRepository])],
+  providers: [RivenListService],
+  exports: [RivenListService]
 })
 export class RivenListModule {}
 
-@Module({
-  imports: [DatabaseModule],
-  providers: [...marketUrlProviders, MarketUrlService]
-})
-export class MarketUrlModule {}

@@ -10,7 +10,7 @@ function App() {
         <Route exact path="/">
           <h1 style={{textAlign: 'center', paddingTop: '30vh'}}>You visited a wrong page.</h1>
         </Route>
-        <Route path="/rivenhunter/:secret" children={<RivenHunterQueryBuilder/>}/>
+        <Route path="/api/rivenhunter/:secret" children={<RivenHunterQueryBuilder/>}/>
       </Switch>
     </HashRouter>
   );

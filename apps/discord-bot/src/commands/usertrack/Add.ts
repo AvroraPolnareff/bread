@@ -1,8 +1,6 @@
 import {Command} from "../Command";
 import {Message, MessageEmbed, TextChannel} from "discord.js";
-import PQueue from "p-queue";
-import {Logger} from "../../utility/Logger";
-import {UserTracker} from "../../features/UserTracker";
+import Axios from "axios";
 
 
 export class Add implements Command{
@@ -11,28 +9,22 @@ export class Add implements Command{
     name: string = "add";
     prefix: string = "usertrack";
 
-    public constructor(
-        private promiseQueue: PQueue,
-        private logger: Logger
-    ) {
+    public constructor() {
     }
 
     async run(msg: Message, args?: string[]): Promise<void> {
         try {
-            const userTracker = new UserTracker(msg.author.id, this.promiseQueue, msg.client)
-            const prey = await userTracker.add(args[0], msg.channel.id, msg.guild?.id ?? "")
-            await msg.reply(`**${msg.author.username}** has started tracking **${prey.nickname}**. The online status updates will be posted below.`)
-            await userTracker.startTracking(prey, async (profile, channel) => {
-                if (profile.status === "offline") {
-                    await channel.send(`<@${prey.userId}>, ${prey.nickname} just went **OFFLINE** on Warframe Market.`)
-                } else if (profile.status === "online") {
-                    await channel.send(`<@${prey.userId}>, ${prey.nickname} is currently **ONLINE** on Warframe Market!`)
-                } else {
-                    await channel.send(`<@${prey.userId}>, ${prey.nickname} is currently **ONLINE IN GAME** on Warframe Market!`)
-                }
+            const url = args[0]
+            const nickname = url.slice(url.lastIndexOf('/') + 1)
+            await Axios.post("http://localhost:3000/api/v1/usertracker/", {
+                userId: msg.author.id,
+                channelId: msg.channel.id,
+                guildId: msg.guild?.id ?? "",
+                url: url,
+                nickname: nickname,
             })
+            await msg.reply(`**${msg.author.username}** has started tracking **${nickname}**. The online status updates will be posted below.`)
         } catch (e) {
-            this.logger.error(e)
             let embed = new MessageEmbed()
             embed.addField("Error...", e.message)
             await msg.reply(embed)

@@ -1,7 +1,11 @@
 {
   "name": "@bread/wf-market",
   "version": "1.0.0",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "author": "aurora",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "typescript": "^4.0.3"
+  }
 }

@@ -1,20 +1,27 @@
 import {Command} from "../Command";
-import {Message} from "discord.js";
-import {UserTracker} from "../../features/UserTracker";
-import PQueue from "p-queue";
+import {Message, MessageEmbed} from "discord.js";
+import Axios from "axios";
+import url from "url";
 
 export class List implements Command {
     description: string = "This command will display the list of active links used by the **User Tracker** in the channel it was posted in.";
     name: string = "list";
     prefix: string = "usertrack";
 
-    constructor(
-      private promiseQueue: PQueue
-    ) {}
+    constructor() {}
 
     async run(msg: Message, args?: string[]): Promise<void> {
-        const userTracker = new UserTracker(msg.author.id, this.promiseQueue, msg.client);
-        const embed = await userTracker.list(msg.channel.id, msg.guild?.id ?? "")
+        const params = new url.URLSearchParams({
+            userId: msg.author.id,
+            channelId: msg.channel.id,
+            guildId: msg.guild?.id ?? "",
+        })
+        const res = await Axios.get('http://localhost:3000/api/v1/usertracker/find?' + params.toString())
+        const embed = new MessageEmbed()
+        embed.setTitle('Users:')
+        res.data.forEach((prey, index) => {
+            embed.addField(`**${index + 1}**`, `*${prey.nickname}*`)
+        })
         await msg.reply(embed)
     }
 

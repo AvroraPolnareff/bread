@@ -1,7 +1,7 @@
 import {Command} from "../Command";
 import {Message} from "discord.js";
-import PQueue from "p-queue";
-import {UserTracker} from "../../features/UserTracker";
+import url from "url";
+import Axios from "axios";
 
 export class Remove implements Command {
     args: string = "index";
@@ -9,15 +9,23 @@ export class Remove implements Command {
     name: string = "remove";
     prefix: string = "usertrack";
 
-    public constructor(
-        private promiseQueue: PQueue,
-    ) {
-    }
-
     async run(msg: Message, args?: string[]): Promise<void> {
-        const userTracker = new UserTracker(msg.author.id, this.promiseQueue, msg.client)
-        await userTracker.remove(parseInt(args[0]) - 1, msg.channel.id, msg.guild?.id ?? "")
-        await msg.reply("User has been successfully deleted from list!")
+        const index = parseInt(args[0]) - 1
+        const params = new url.URLSearchParams({
+            userId: msg.author.id,
+            channelId: msg.channel.id,
+            guildId: msg.guild?.id ?? "",
+        })
+        const res = await Axios.get("http://localhost:3000/api/v1/usertracker/find?" + params.toString())
+        if (index >= 0 && index < res.data.length) {
+            const id = res.data[index].id
+            await Axios.delete(`http://localhost:3000/api/v1/usertracker/${id}`)
+            await msg.reply('URL successfully deleted')
+        } else {
+            await msg.reply('You entered a wrong index')
+        }
+
+
     }
 
 }

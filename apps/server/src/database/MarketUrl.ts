@@ -1,12 +1,34 @@
-import {Column, Connection, Entity, PrimaryGeneratedColumn, Repository} from "typeorm";
-import {consts} from "../common/const";
-import {HttpException, HttpStatus, Inject, Injectable} from "@nestjs/common";
-import {MarketUrlDto} from "../dto/MarketUrlDto";
+import {Column,  Entity, PrimaryGeneratedColumn, Repository} from "typeorm";
+import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
+import {MarketUrlDto} from "@bread/shared";
+import {InjectRepository} from "@nestjs/typeorm";
+
+@Entity()
+export class MarketUrl {
+  @PrimaryGeneratedColumn()
+  id: number
+
+  @Column()
+  userId: string
+
+  @Column()
+  url: string
+
+  @Column()
+  platinumLimit: number
+
+  @Column()
+  channelId: string
+
+  @Column()
+  guildId: string
+
+}
 
 @Injectable()
 export class MarketUrlService {
   constructor(
-    @Inject(consts.MARKET_URL_REPOSITORY)
+    @InjectRepository(MarketUrl)
     private urlRepository: Repository<MarketUrl>
   ) {}
 
@@ -37,34 +59,4 @@ export class MarketUrlService {
   async find(marketUrlDto: Partial<MarketUrlDto>) {
     return await this.urlRepository.find(marketUrlDto)
   }
-}
-
-export const marketUrlProviders = [
-  {
-    provide: consts.MARKET_URL_REPOSITORY,
-    useFactory: (connection: Connection) => connection.getRepository(MarketUrl),
-    inject: [consts.DATABASE_CONNECTION]
-  }
-]
-
-@Entity()
-export class MarketUrl {
-  @PrimaryGeneratedColumn()
-  id: number
-
-  @Column()
-  userId: string
-
-  @Column()
-  url: string
-
-  @Column()
-  platinumLimit: number
-
-  @Column()
-  channelId: string
-
-  @Column()
-  guildId: string
-
 }

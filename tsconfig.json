@@ -8,7 +8,8 @@
       "@bread/discord-bot" : ["apps/discord-bot/src"],
       "@bread/front": ["apps/front/src"],
       "@bread/server": ["apps/server/src"],
-      "@bread/wf-market": ["libs/wf-market/src"]
+      "@bread/wf-market": ["libs/wf-market/src"],
+      "@bread/shared": ["libs/shared/src"]
     }
   }
 }

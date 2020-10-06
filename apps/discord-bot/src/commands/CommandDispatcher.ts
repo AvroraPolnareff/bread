@@ -36,12 +36,12 @@ export class CommandDispatcherImpl implements CommandDispatcher {
         this.promiseQueue = promiseQueue
         this.commands = [
             Ping,
-            new Add(this.promiseQueue),
-            new List(this.promiseQueue),
-            new Remove(this.promiseQueue),
-            new UserTrackAdd(this.promiseQueue, this.logger),
-            new UserTrackList(this.promiseQueue),
-            new UserTrackRemove(this.promiseQueue)
+            new Add(),
+            new List(),
+            new Remove(),
+            new UserTrackAdd(),
+            new UserTrackList(),
+            new UserTrackRemove()
 
         ]
     }
@@ -54,7 +54,7 @@ export class CommandDispatcherImpl implements CommandDispatcher {
         this.logger.info(`User ${msg.author.tag} send "${msg.content}".`)
 
 
-        const messageWords = msg.content.split(" ");
+        const messageWords = msg.content.split(" ").filter(el => el);
         const messageCommand = messageWords[0]
         const args = messageWords.slice(1)
         const commandsWithPrefixes = this.commands.filter((command) => !!command.prefix)

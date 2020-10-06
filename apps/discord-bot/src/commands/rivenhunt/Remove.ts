@@ -1,8 +1,7 @@
 import {Command} from "../Command";
 import {Message} from "discord.js";
-import {RivenHunter} from "../../features/RivenHunter";
-import PQueue from "p-queue";
-
+import Axios from "axios";
+import url from "url";
 
 export class Remove implements Command {
     public name = 'remove'
@@ -11,20 +10,23 @@ export class Remove implements Command {
     public prefix = "rivenhunt"
     public args = "index"
 
-    constructor(
-        private promiseQueue: PQueue,
-    ) {}
-
 
     async run(msg: Message, args?: string[]): Promise<void> {
         const index = parseInt(args[0]) - 1
-        const rivenHunter = new RivenHunter(msg.author.id, this.promiseQueue)
-        if (msg.guild) {
-            await rivenHunter.remove(index, msg.channel.id, msg.guild.id)
+        const params = new url.URLSearchParams({
+            userId: msg.author.id,
+            channelId: msg.channel.id,
+            guildId: msg.guild?.id ?? "",
+        })
+        const res = await Axios.get("http://localhost:3000/api/v1/rivenhunter/find?" + params.toString())
+        if (index >= 0 && index < res.data.length) {
+            const id = res.data[index].id
+            await Axios.delete(`http://localhost:3000/api/v1/rivenhunter/${id}`)
+            await msg.reply('URL successfully deleted')
         } else {
-            await rivenHunter.remove(index, msg.channel.id)
+            await msg.reply('You entered a wrong index')
         }
 
-        await msg.reply('URL successfully deleted')
+
     }
 }

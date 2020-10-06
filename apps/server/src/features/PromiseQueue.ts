@@ -1,9 +1,7 @@
 import {Injectable, Module} from "@nestjs/common";
 import PQueue from "p-queue";
 
-@Module({
-  providers: [PQueueService]
-})
+
 
 @Injectable()
 export class PQueueService {
@@ -17,3 +15,9 @@ export class PQueueService {
     return await this.promiseQueue.add(fn)
   }
 }
+
+@Module({
+  providers: [PQueueService],
+  exports: [PQueueService]
+})
+export class PQueueModule {}

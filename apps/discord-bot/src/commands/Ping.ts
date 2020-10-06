@@ -1,7 +1,6 @@
 import {MessageEmbed} from "discord.js";
 import {Command} from "./Command";
 
-
 export const Ping: Command = {
     name: 'ping',
     aliases: ['ping!'],
