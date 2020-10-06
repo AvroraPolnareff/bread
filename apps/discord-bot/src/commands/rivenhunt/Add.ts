@@ -13,22 +13,21 @@ export class Add implements Command {
   async run(msg: Message, args: string[]): Promise<void> {
     const newUrl = args[0]
     let platinumLimit: number = -1
+    await msg.reply("Enter platinum limit")
     while (platinumLimit > 1000000000 || platinumLimit < 0) {
-      await msg.reply("Enter platinum limit")
+
       const platinumLimitRespond = await msg.channel.awaitMessages(m => !!parseInt(m.content), {max: 1})
       platinumLimit = parseInt(platinumLimitRespond.first().content.trim())
       if (platinumLimit > 1147483647 || platinumLimit < 0) await msg.reply("Enter valid limit!")
     }
     try {
-      console.log("lol1")
-      const response = await Axios.post("http://localhost:3000/api/v1/rivenhunter", {
+      await Axios.post("http://localhost:3000/api/v1/rivenhunter", {
         userId: msg.author.id,
         platinumLimit,
         channelId: msg.channel.id,
         guildId: msg.guild?.id ?? "",
         url: newUrl
       } as MarketUrlDto)
-      console.log(response.statusText)
       await msg.reply("URL has been added. Start hunting...")
     } catch (e) {
       console.log(e)

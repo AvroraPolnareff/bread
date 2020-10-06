@@ -26,7 +26,5 @@ export class Remove implements Command {
         } else {
             await msg.reply('You entered a wrong index')
         }
-
-
     }
 }

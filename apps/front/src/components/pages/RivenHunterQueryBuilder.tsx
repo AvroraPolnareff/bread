@@ -22,7 +22,6 @@ export const RivenHunterQueryBuilder: FC = () => {
 
   useEffect(() => {
     axios.get(`/api/v1/rivenhunter/${secret}`).then(res => {
-      console.log(res)
       setLoading(false)
       if (res.status === 200) {
         setExists(res.status === 200)
@@ -38,7 +37,6 @@ export const RivenHunterQueryBuilder: FC = () => {
       negative: negative,
       weapon : weapon,
     }).then(res => {
-      console.log(res)
       if (res.status === 202) {
         setButton("DONE")
         setExists(false)

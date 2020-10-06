@@ -40,7 +40,6 @@ export class RivenListRepository extends Repository<RivenList> {
         return []
       }
     } else {
-      console.log("Doing some first launch stuff")
       await this.saveRivenList(actualRivenList, marketUrl)
       return []
     }
