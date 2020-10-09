@@ -10,7 +10,7 @@ import styled from "styled-components";
 
 
 export const RivenHunterQueryBuilder: FC = () => {
-  const {secret} = useParams()
+  const {secret} = useParams<{ secret: string }>()
   const [exists, setExists] = useState(false)
   const [loading, setLoading] = useState(true)
   const [weapon, setWeapon] = useState("")
