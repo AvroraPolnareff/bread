@@ -5,7 +5,8 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'normalize.css/normalize.css'
-import {createGlobalStyle} from "styled-components";
+import {createGlobalStyle, ThemeProvider} from "styled-components";
+import {defaultTheme} from "./themes";
 
 export const GlobalStyle = createGlobalStyle`
   * {
@@ -15,8 +16,10 @@ export const GlobalStyle = createGlobalStyle`
 
 ReactDOM.render(
   <React.StrictMode>
-    <GlobalStyle/>
-    <App />
+    <ThemeProvider theme={defaultTheme}>
+      <GlobalStyle/>
+      <App/>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
