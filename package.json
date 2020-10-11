@@ -1,9 +1,6 @@
 {
   "name": "bread",
   "private": true,
-  "devDependencies": {
-    "lerna": "^3.22.1"
-  },
   "workspaces": [
     "apps/*",
     "libs/*"
@@ -11,5 +8,8 @@
   "dependencies": {
     "typescript": "^4.0.3",
     "discord.js": "^12.3.1"
+  },
+  "devDependencies": {
+    "lerna": "^3.22.1"
   }
 }
