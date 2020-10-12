@@ -24,7 +24,9 @@
     "@nestjs/platform-express": "^7.1.1",
     "@bread/shared": "^1.0.0",
     "@bread/wf-market": "^1.0.0",
+    "class-transformer": "^0.3.1",
     "nest-router": "^1.0.9",
+    "nestjs-session": "^1.0.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.5"
