@@ -1,3 +1,3 @@
-import {MarketUrlDto, PreyDto} from "./dto";
+export * from "./dto";
 
-export {MarketUrlDto, PreyDto}
+

@@ -18,3 +18,11 @@ export interface PreyDto {
   channelId: string
   guildId: string
 }
+
+export interface BreadUserDto {
+  id?: number
+  userId: string
+  email: string
+  currentRefreshToken?: string
+  newUser: boolean
+}
