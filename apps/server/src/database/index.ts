@@ -3,6 +3,7 @@ import {MarketUrl,  MarketUrlService} from "./MarketUrl";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {RivenListRepository} from "./RivenListRepository";
 import {RivenListService} from "./RivenListService";
+import {BreadUser, BreadUserService} from "./BreadUser";
 
 @Module({
   imports: [TypeOrmModule.forFeature([MarketUrl])],
@@ -17,4 +18,11 @@ export class MarketUrlModule {}
   exports: [RivenListService]
 })
 export class RivenListModule {}
+
+@Module({
+  imports: [TypeOrmModule.forFeature([BreadUser])],
+  providers: [BreadUserService],
+  exports: [BreadUserService]
+})
+export class BreadUserModule {}
 
