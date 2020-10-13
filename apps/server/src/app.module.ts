@@ -13,6 +13,8 @@ import {RivenList} from "./database/RivenList";
 import {config} from "dotenv";
 import {Prey} from "./database/Prey";
 import {UserTrackerModule} from "./features/UserTracker";
+import {SessionModule} from "nestjs-session";
+import {DiscordModule} from "./features/Discord/discord.module";
 
 config()
 
@@ -25,6 +27,9 @@ const routes: Routes = [
 
 @Module({
   imports: [
+    SessionModule.forRoot({
+      session: {secret: "secret"}
+    }),
     ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: resolve("../front/build")
@@ -40,7 +45,8 @@ const routes: Routes = [
     RouterModule.forRoutes(routes),
     ApiModule,
     RivenHunterModule,
-    UserTrackerModule
+    UserTrackerModule,
+    DiscordModule
   ],
   controllers: [AppController],
   providers: [AppService],
