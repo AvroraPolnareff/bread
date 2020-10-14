@@ -23,6 +23,13 @@ export interface BreadUserDto {
   id?: number
   userId: string
   email: string
+  avatar: string
+  nickname: string
+  discriminator: string
   currentRefreshToken?: string
+  newUser: boolean
+}
+
+export interface UpdateCurrentUserDto {
   newUser: boolean
 }
