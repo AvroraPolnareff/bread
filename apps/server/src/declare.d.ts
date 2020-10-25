@@ -1,5 +1,5 @@
 import "express"
-import {Session as ProjectSession} from './interfaces/Session'
+import {UserSession as ProjectSession} from './interfaces/UserSession'
 
 declare module 'express' {
   interface Request {

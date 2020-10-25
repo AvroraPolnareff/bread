@@ -22,17 +22,31 @@ export class WfMarketAPI {
     return request.data.payload.profile
   }
 
-  public auctions = async (url: string): Promise<Auction[]> => {
-    const urlObject = new URL(url)
+  public auctions = async (query: Query): Promise<Auction[]> => {
     try {
       type ResponseData = { payload: { auctions: Auction[] } }
       const request = await this.instance.get<ResponseData>('/auctions/search', {
-        params: urlObject.searchParams
+        params: this.queryToParams(query)
       })
       return request.data.payload.auctions
     } catch (e) {
       console.log(e)
     }
+  }
+
+  queryToParams(query: Query) {
+    const params = []
+    if (query.weapon) params.push({weapon_url_name: query.weapon})
+    if (query.positiveStats) params.push({positive_stats: query.positiveStats.toString()})
+    if (query.negativeStat) params.push({negative_stats: query.negativeStat})
+    if (query.polarity) params.push({polarity: query.polarity})
+    if (query.masteryRankMin) params.push({mastery_rank_min: query.masteryRankMin})
+    if (query.masteryRankMax) params.push({mastery_rank_max: query.masteryRankMax})
+    if (query.reRollsMin) params.push({re_rolls_min: query.reRollsMin})
+    if (query.reRollsMax) params.push({re_rolls_max: query.reRollsMax})
+    if (query.sortBy) params.push({sort_by: query.sortBy})
+    else params.push({sort_by: "positive_attr_desc"})
+    return params
   }
 
   public bids = async (id: string) => {
@@ -41,6 +55,19 @@ export class WfMarketAPI {
     return request.data.payload.bids
   }
 }
+
+export interface Query {
+  weapon?: string,
+  positiveStats?: string[]
+  negativeStat?: string
+  polarity?: string
+  masteryRankMin?: number
+  masteryRankMax?: number
+  reRollsMin?: string
+  reRollsMax?: string
+  sortBy?: string
+}
+
 
 export interface Profile {
   region: string

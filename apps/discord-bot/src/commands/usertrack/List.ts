@@ -16,7 +16,10 @@ export class List implements Command {
             channelId: msg.channel.id,
             guildId: msg.guild?.id ?? "",
         })
-        const res = await Axios.get('http://localhost:3000/api/v1/usertracker/find?' + params.toString())
+        const res = await Axios.get(
+          'http://localhost:3000/api/v1/usertracker/find?' + params.toString(),
+          {headers: [{"bot-auth": process.env.BOT_SECRET}]}
+          )
         const embed = new MessageEmbed()
         embed.setTitle('Users:')
         res.data.forEach((prey, index) => {

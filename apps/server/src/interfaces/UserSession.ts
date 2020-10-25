@@ -1,7 +1,7 @@
 import {DiscordAuth, DiscordUser} from "../features/Discord/discord.service";
 import {BreadUser} from "../database/BreadUser";
 
-export interface Session {
+export interface UserSession {
   discordAuth?: DiscordAuth,
   discordUser?: DiscordUser,
   breadUser?: BreadUser

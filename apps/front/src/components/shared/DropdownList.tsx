@@ -88,7 +88,7 @@ const Entry: FC<EntryProps> = ({selected, content, onClick, onBlur, onFocus}) =>
     } else return <span>{content}</span>
   }, [selected, content])
   return (
-    <StyledEntry tabIndex={1} onClick={onClick} onFocus={onFocus} onBlur={onBlur}>
+    <StyledEntry tabIndex={-1} onClick={onClick} onFocus={onFocus} onBlur={onBlur}>
       {displayingString}
     </StyledEntry>
   )

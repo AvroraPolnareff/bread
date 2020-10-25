@@ -12,6 +12,15 @@ export class BreadUser {
   @Column()
   userId: string
 
+  @Column()
+  nickname: string
+
+  @Column()
+  avatar: string
+
+  @Column()
+  discriminator: string
+
   @Column({unique: true})
   email: string
 
@@ -37,5 +46,9 @@ export class BreadUserService {
 
   async findOne(user: Partial<BreadUser>) {
     return await this.breadUserRepository.findOne(user)
+  }
+
+  async update(id: number, user: Partial<BreadUser>) {
+    return await this.breadUserRepository.update({id: id}, user)
   }
 }

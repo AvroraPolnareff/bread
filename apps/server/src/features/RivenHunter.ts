@@ -1,12 +1,12 @@
 import {Auction, Bid} from "@bread/wf-market";
 import {Server, Socket} from "socket.io";
 import {PQueueModule, PQueueService} from "./PromiseQueue";
-import {MarketUrl, MarketUrlService} from "../database/MarketUrl";
+import {RivenQuery, RivenQueryService} from "../database/RivenQuery";
 import {Cron} from "@nestjs/schedule";
 import {WebSocketGateway, WebSocketServer} from "@nestjs/websockets";
 import {Injectable, Module} from "@nestjs/common";
 import {MarketUrlModule, RivenListModule} from "../database";
-import {RivenListService} from "../database/RivenListService";
+import {RivenSearchService} from "../database/riven-search.service";
 
 type AuctionWithBids = { auction: Auction, bids: Bid[] }
 
@@ -15,15 +15,15 @@ type AuctionWithBids = { auction: Auction, bids: Bid[] }
 export class RivenHunterService {
   constructor(
     private promiseQueue: PQueueService,
-    private marketUrlService: MarketUrlService,
-    private rivenListService: RivenListService
+    private rivenQueryService: RivenQueryService,
+    private rivenListService: RivenSearchService
   ) {}
 
   @WebSocketServer() server: Server
 
-  public huntOnce = async (urlEntity: MarketUrl): Promise<AuctionWithBids[]> => {
+  public huntOnce = async (rivenQuery: RivenQuery): Promise<AuctionWithBids[]> => {
     return await this.promiseQueue.add(async () => {
-      return this.rivenListService.fetchNewRivenMods(urlEntity.url)
+      return this.rivenListService.fetchNewRivenMods(rivenQuery.url)
     })
   }
 
@@ -40,7 +40,7 @@ export class RivenHunterService {
   async startHunting() {
     const clients = await this.clients()
     if (!clients.length) return
-    const urls = await this.marketUrlService.find({})
+    const urls = await this.rivenQueryService.find({})
     for (const url of urls) {
       const rivenMods = await this.huntOnce(url)
       if (rivenMods.length) {

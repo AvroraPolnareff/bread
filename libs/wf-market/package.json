@@ -4,6 +4,9 @@
   "main": "dist/index.js",
   "author": "aurora",
   "license": "MIT",
+  "scripts": {
+    "build": "rm -rf ./dist && tsc"
+  },
   "dependencies": {
     "axios": "^0.20.0"
   }

@@ -6,7 +6,7 @@ import {resolve} from "path";
 import {ApiModule} from './api/api.module';
 import {RouterModule, Routes} from "nest-router";
 import {RivenHunterModule} from "./features/RivenHunter";
-import {MarketUrl} from "./database/MarketUrl";
+import {RivenQuery} from "./database/RivenQuery";
 import {ScheduleModule} from "@nestjs/schedule";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {RivenList} from "./database/RivenList";
@@ -15,6 +15,8 @@ import {Prey} from "./database/Prey";
 import {UserTrackerModule} from "./features/UserTracker";
 import {SessionModule} from "nestjs-session";
 import {DiscordModule} from "./features/Discord/discord.module";
+import {BreadUserModule} from "./database";
+import {BreadUser} from "./database/BreadUser";
 
 config()
 
@@ -38,7 +40,7 @@ const routes: Routes = [
       type: 'postgres',
       url: process.env.DATABASE_URL,
       entities: [
-        MarketUrl, RivenList, Prey
+        RivenQuery, RivenList, Prey, BreadUser
       ],
       synchronize: true,
     }),
@@ -46,7 +48,8 @@ const routes: Routes = [
     ApiModule,
     RivenHunterModule,
     UserTrackerModule,
-    DiscordModule
+    DiscordModule,
+    BreadUserModule
   ],
   controllers: [AppController],
   providers: [AppService],

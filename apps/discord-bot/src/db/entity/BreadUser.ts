@@ -18,4 +18,6 @@ export class BreadUser {
 
     @Column()
     userUpdateFrequency: number
+
+
 }

@@ -1,21 +1,21 @@
 import {Module} from "@nestjs/common";
-import {MarketUrl,  MarketUrlService} from "./MarketUrl";
+import {RivenQuery,  RivenQueryService} from "./RivenQuery";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {RivenListRepository} from "./RivenListRepository";
-import {RivenListService} from "./RivenListService";
+import {RivenSearchService} from "./riven-search.service";
 import {BreadUser, BreadUserService} from "./BreadUser";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MarketUrl])],
-  providers: [MarketUrlService],
-  exports: [MarketUrlService]
+  imports: [TypeOrmModule.forFeature([RivenQuery])],
+  providers: [RivenQueryService],
+  exports: [RivenQueryService]
 })
 export class MarketUrlModule {}
 
 @Module({
   imports: [TypeOrmModule.forFeature([RivenListRepository])],
-  providers: [RivenListService],
-  exports: [RivenListService]
+  providers: [RivenSearchService],
+  exports: [RivenSearchService]
 })
 export class RivenListModule {}
 

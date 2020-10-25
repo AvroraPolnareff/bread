@@ -3,7 +3,7 @@ import {RivenListRepository} from "./RivenListRepository";
 import {Auction, Bid, WfMarketAPI} from "@bread/wf-market";
 
 @Injectable()
-export class RivenListService {
+export class RivenSearchService {
   constructor(
     private rivenListRepository: RivenListRepository
   ) {}
@@ -18,6 +18,8 @@ export class RivenListService {
     }
     return auctionsWithBids
   }
+
+
 }
 
 

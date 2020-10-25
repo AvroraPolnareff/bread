@@ -35,6 +35,9 @@ export class AppController {
       req.session.breadUser = await this.breadUserService.add({
         userId: discordUser.id,
         email: discordUser.email,
+        avatar: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`,
+        discriminator: discordUser.discriminator,
+        nickname: discordUser.username,
         newUser: true
       })
     }

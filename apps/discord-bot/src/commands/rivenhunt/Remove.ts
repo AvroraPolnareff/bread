@@ -18,10 +18,16 @@ export class Remove implements Command {
             channelId: msg.channel.id,
             guildId: msg.guild?.id ?? "",
         })
-        const res = await Axios.get("http://localhost:3000/api/v1/rivenhunter/find?" + params.toString())
+        const res = await Axios.get(
+          "http://localhost:3000/api/v1/rivenhunter/find?" + params.toString(),
+          {headers: [{"bot-auth": process.env.BOT_SECRET}]}
+          )
         if (index >= 0 && index < res.data.length) {
             const id = res.data[index].id
-            await Axios.delete(`http://localhost:3000/api/v1/rivenhunter/${id}`)
+            await Axios.delete(
+              `http://localhost:3000/api/v1/rivenhunter/${id}`,
+              {headers: [{"bot-auth": process.env.BOT_SECRET}]}
+            )
             await msg.reply('URL successfully deleted')
         } else {
             await msg.reply('You entered a wrong index')

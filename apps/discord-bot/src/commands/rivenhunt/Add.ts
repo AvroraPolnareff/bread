@@ -22,12 +22,14 @@ export class Add implements Command {
     }
     try {
       await Axios.post("http://localhost:3000/api/v1/rivenhunter", {
-        userId: msg.author.id,
-        platinumLimit,
-        channelId: msg.channel.id,
-        guildId: msg.guild?.id ?? "",
-        url: newUrl
-      } as MarketUrlDto)
+          userId: msg.author.id,
+          platinumLimit,
+          channelId: msg.channel.id,
+          guildId: msg.guild?.id ?? "",
+          url: newUrl
+        } as MarketUrlDto,
+        {headers: [{"bot-auth": process.env.BOT_SECRET}]}
+      )
       await msg.reply("URL has been added. Start hunting...")
     } catch (e) {
       console.log(e)

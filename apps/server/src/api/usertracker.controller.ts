@@ -1,11 +1,13 @@
-import {Body, Controller, Delete, Get, Param, Post, Query} from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Post, Query, UseGuards} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {Prey} from "../database/Prey";
 import {PreyDto} from "@bread/shared";
 import {InjectRepository} from "@nestjs/typeorm";
 import {WfMarketAPI} from "@bread/wf-market";
+import {Roles, RolesGuard} from "../guards/roles-guard";
 
 @Controller('usertracker')
+@UseGuards(RolesGuard)
 export class UserTrackerController {
   constructor(
     @InjectRepository(Prey)
@@ -13,6 +15,7 @@ export class UserTrackerController {
   ) {}
 
   @Post()
+  @Roles("bot")
   async add(@Body() body: Partial<PreyDto>) {
     const api = new WfMarketAPI()
     const profile = await api.profile(body.nickname)
@@ -25,11 +28,13 @@ export class UserTrackerController {
   }
 
   @Get('/find')
+  @Roles("bot")
   async find(@Query() query: Partial<PreyDto>) {
     return await this.preyRepository.find(query)
   }
 
   @Delete(':id')
+  @Roles("bot")
   async delete(@Param('id') id: number) {
     await this.preyRepository.delete(id)
   }

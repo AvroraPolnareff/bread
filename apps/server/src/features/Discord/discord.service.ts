@@ -8,19 +8,18 @@ config()
 const CLIENT_ID = process.env.DISCORD_ID
 const REDIRECT_URL = process.env.REDIRECT_URL
 const CLIENT_SECRET = process.env.DISCORD_SECRET
+const TOKEN = process.env.DISCORD_TOKEN
 const SCOPE = 'identify guilds.join email'
 
 @Injectable()
 export class DiscordService {
   client : DiscordClient;
-  constructor(
-    private readonly token: string
-  ) {
+  constructor() {
     this.client = new DiscordClient()
   }
 
   async login() {
-    await this.client.login(this.token)
+    await this.client.login(TOKEN)
   }
 
   async fetchAuthToken(code: string) {

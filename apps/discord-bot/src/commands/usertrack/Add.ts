@@ -22,7 +22,7 @@ export class Add implements Command{
                 guildId: msg.guild?.id ?? "",
                 url: url,
                 nickname: nickname,
-            })
+            }, {headers: [{"bot-auth": process.env.BOT_SECRET}]})
             await msg.reply(`**${msg.author.username}** has started tracking **${nickname}**. The online status updates will be posted below.`)
         } catch (e) {
             let embed = new MessageEmbed()
