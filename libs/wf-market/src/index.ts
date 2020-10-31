@@ -1,5 +1,4 @@
 import axios, {AxiosInstance} from "axios";
-import {URL} from "url";
 
 export class WfMarketAPI {
   private readonly API_ROOT = 'https://api.warframe.market/v1'
@@ -22,7 +21,7 @@ export class WfMarketAPI {
     return request.data.payload.profile
   }
 
-  public auctions = async (query: Query): Promise<Auction[]> => {
+  public auctions = async (query: RivenQuery): Promise<Auction[]> => {
     try {
       type ResponseData = { payload: { auctions: Auction[] } }
       const request = await this.instance.get<ResponseData>('/auctions/search', {
@@ -34,7 +33,7 @@ export class WfMarketAPI {
     }
   }
 
-  queryToParams(query: Query) {
+  queryToParams(query: RivenQuery) {
     const params = []
     if (query.weapon) params.push({weapon_url_name: query.weapon})
     if (query.positiveStats) params.push({positive_stats: query.positiveStats.toString()})
@@ -56,7 +55,7 @@ export class WfMarketAPI {
   }
 }
 
-export interface Query {
+export interface RivenQuery {
   weapon?: string,
   positiveStats?: string[]
   negativeStat?: string
