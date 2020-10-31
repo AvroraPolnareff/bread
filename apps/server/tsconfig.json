@@ -13,5 +13,6 @@
     "baseUrl": "./",
     "incremental": true,
     "types": ["jest"]
-  }
+  },
+  "exclude": ["./dist"]
 }

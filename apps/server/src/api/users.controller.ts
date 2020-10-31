@@ -1,7 +1,7 @@
 import {Body, Controller, Get, HttpException, HttpStatus, Put, Session, UseGuards} from "@nestjs/common";
 import {Roles, RolesGuard} from "../guards/roles-guard";
 import {UserSession} from "../interfaces/UserSession";
-import {BreadUserService} from "../database/BreadUser";
+import {BreadUserService} from "../database";
 import {UpdateCurrentUserDto} from "@bread/shared";
 
 

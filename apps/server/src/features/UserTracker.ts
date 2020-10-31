@@ -2,7 +2,7 @@ import {Injectable, Module} from "@nestjs/common";
 import {WebSocketGateway, WebSocketServer} from "@nestjs/websockets";
 import {PQueueModule, PQueueService} from "./PromiseQueue";
 import {Repository} from "typeorm";
-import {Prey} from "../database/Prey";
+import {Prey} from "../database";
 import {InjectRepository, TypeOrmModule} from "@nestjs/typeorm";
 import {Server, Socket} from "socket.io";
 import {PreyDto} from "@bread/shared";

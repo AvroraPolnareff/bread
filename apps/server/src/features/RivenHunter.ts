@@ -1,29 +1,49 @@
-import {Auction, Bid} from "@bread/wf-market";
-import {Server, Socket} from "socket.io";
-import {PQueueModule, PQueueService} from "./PromiseQueue";
-import {RivenQuery, RivenQueryService} from "../database/RivenQuery";
-import {Cron} from "@nestjs/schedule";
-import {WebSocketGateway, WebSocketServer} from "@nestjs/websockets";
 import {Injectable, Module} from "@nestjs/common";
-import {MarketUrlModule, RivenListModule} from "../database";
-import {RivenSearchService} from "../database/riven-search.service";
+import {WebSocketGateway, WebSocketServer} from "@nestjs/websockets";
+import {Server, Socket} from "socket.io";
+import {RivenQuery, RivenQueryService, RivenQueryModule} from "../database";
+import {Auction, Bid, WfMarketAPI} from "@bread/wf-market";
+import {PQueueModule, PQueueService} from "./PromiseQueue";
+import * as _ from "lodash";
+import {Cron} from "@nestjs/schedule";
 
 type AuctionWithBids = { auction: Auction, bids: Bid[] }
 
 @Injectable()
 @WebSocketGateway({namespace: 'rivenhunter'})
 export class RivenHunterService {
-  constructor(
-    private promiseQueue: PQueueService,
-    private rivenQueryService: RivenQueryService,
-    private rivenListService: RivenSearchService
-  ) {}
+  private auctionsList = new Map<string, Auction[]>()
 
-  @WebSocketServer() server: Server
+  @WebSocketServer()
+  private readonly server: Server
 
-  public huntOnce = async (rivenQuery: RivenQuery): Promise<AuctionWithBids[]> => {
+  @Cron("*/7 * * * * *")
+  async startHunting() {
+    const clients = await this.clients()
+    if (!clients.length) return
+    const queries = await this.rivenQueryService.find({})
+    for (const query of queries) {
+      const rivenMods = await this.huntOnce(query)
+      if (rivenMods.length) {
+        this.server.emit("rivens", {rivenMods, url: query})
+      }
+    }
+  }
+
+  huntOnce = async (rivenQuery: RivenQuery): Promise<AuctionWithBids[]> => {
     return await this.promiseQueue.add(async () => {
-      return this.rivenListService.fetchNewRivenMods(rivenQuery.url)
+      const api = new WfMarketAPI()
+      const auctions = await api.auctions(rivenQuery)
+      const newModsWithBids: AuctionWithBids[] = []
+      if (this.auctionsList) {
+        const newMods = _.differenceWith(auctions, this.auctionsList.get(rivenQuery.userId), _.isEqual)
+        for await (const mod of newMods) {
+          const bids = await api.bids(mod.id)
+          newModsWithBids.push({auction: mod, bids: bids})
+        }
+      }
+      this.auctionsList.set(rivenQuery.userId, auctions)
+      return newModsWithBids
     })
   }
 
@@ -36,24 +56,15 @@ export class RivenHunterService {
     })
   }
 
-  @Cron("*/20 * * * * *")
-  async startHunting() {
-    const clients = await this.clients()
-    if (!clients.length) return
-    const urls = await this.rivenQueryService.find({})
-    for (const url of urls) {
-      const rivenMods = await this.huntOnce(url)
-      if (rivenMods.length) {
-        this.server.emit("rivens", {rivenMods, url})
-      }
-    }
-  }
+  constructor(
+    private promiseQueue: PQueueService,
+    private rivenQueryService: RivenQueryService
+  ) {}
 }
 
 @Module({
-  imports: [RivenListModule, PQueueModule, MarketUrlModule],
+  imports: [PQueueModule, RivenQueryModule],
   providers: [RivenHunterService],
   exports: [RivenHunterService]
 })
 export class RivenHunterModule {}
-

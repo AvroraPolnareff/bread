@@ -1,6 +1,6 @@
 import {Body, Controller, Delete, Get, Param, Post, Query, UseGuards} from "@nestjs/common";
 import {Repository} from "typeorm";
-import {Prey} from "../database/Prey";
+import {Prey} from "../database";
 import {PreyDto} from "@bread/shared";
 import {InjectRepository} from "@nestjs/typeorm";
 import {WfMarketAPI} from "@bread/wf-market";

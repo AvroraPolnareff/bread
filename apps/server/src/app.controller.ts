@@ -3,7 +3,7 @@ import {Request, Response} from "express"
 import {AppService} from './app.service';
 import * as url from "url";
 import {DiscordService} from "./features/Discord/discord.service";
-import {BreadUserService} from "./database/BreadUser";
+import {BreadUserService} from "./database";
 
 @Controller()
 export class AppController {
